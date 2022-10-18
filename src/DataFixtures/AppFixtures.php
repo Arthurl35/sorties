@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Participant;
+use App\Entity\Site;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -23,9 +24,6 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        // $product = new Product();
-        // $manager->persist($product);
-
         $this->manager = $manager;
 
         $this->addUsers();
@@ -33,9 +31,16 @@ class AppFixtures extends Fixture
 
     public function addUsers(){
 
+
+        $sites = ['Nantes','Rennes','Quimper','Niort'];
+
         for($i = 0; $i < 10; $i++){
 
             $Participant = new Participant();
+
+            $site = new Site();
+            $site->setNom($this->generator->randomElement($sites));
+
             $Participant->setRoles(['ROLE_USER'])
                 ->setEmail($this->generator->email)
                 ->setPrenom($this->generator->firstName)
@@ -46,9 +51,12 @@ class AppFixtures extends Fixture
                 ->setPassword($this->userPasswordHasher->hashPassword($Participant, '123456'));
 
             $this->manager->persist($Participant);
+            $this->manager->persist($site);
+
         }
 
         $this->manager->flush();
 
     }
+
 }

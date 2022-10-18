@@ -1,0 +1,8 @@
+{% block body %}
+
+    <h1>{% block formTitle %}MonProfilController{% endblock %}</h1>
+    {{ form_start(profilForm) }}
+    {{ form_widget(profilForm) }}
+    <button>{% block buttonLabel %}{% endblock %}</button>
+    {{ form_end(profilForm) }}
+{% endblock %}
