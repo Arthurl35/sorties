@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+        {{ parent() }} | Accueil
+{% endblock %}
+
+{% block body %}
+    <h1>Accueil</h1>
+<div>
+    <table>
+        <tr>
+            <th>Nom de la sortie</th>
+            <th>Date de la sortie</th>
+            <th>Cloture</th>
+            <th>Inscrits/places</th>
+            <th>Etat</th>
+            <th>Inscrit</th>
+            <th>Organisateur</th>
+        </tr>
+    {% for sortie in sorties %}
+        <tr>
+            <td>{{ sortie.name }}</td>
+            <td>{{ sortie.dateHeureDebut }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+{% endblock %}

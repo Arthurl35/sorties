@@ -2,17 +2,23 @@
 
 namespace App\Controller;
 
+use App\Entity\Site;
+use App\Repository\SiteRepository;
+use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/sorties', name: 'sorties_')]
 class SortiesController extends AbstractController
 {
-    #[Route('/sorties', name: 'app_sorties')]
-    public function index(): Response
+    #[Route('/', name: 'list')]
+    public function list(SortieRepository $sortieRepository): Response
     {
-        return $this->render('sorties/index.html.twig', [
-            'controller_name' => 'SortiesController',
+        $sorties = $sortieRepository->findAll();
+
+        return $this->render('sorties/list.html.twig', [
+            'sorties' => $sorties
         ]);
     }
 }
