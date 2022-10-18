@@ -55,6 +55,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Site $site = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $backdrop = null;
+
     public function __construct()
     {
         $this->sorties_organisees = new ArrayCollection();
@@ -275,6 +278,18 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSite(?Site $site): self
     {
         $this->site = $site;
+
+        return $this;
+    }
+
+    public function getBackdrop(): ?string
+    {
+        return $this->backdrop;
+    }
+
+    public function setBackdrop(string $backdrop): self
+    {
+        $this->backdrop = $backdrop;
 
         return $this;
     }
