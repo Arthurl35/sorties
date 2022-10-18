@@ -20,8 +20,10 @@ class SortiesController extends AbstractController
     #[Route('', name: 'index')]
     public function index(): Response
     {
-        return $this->render('sorties/index.html.twig', [
-            'controller_name' => 'SortiesController',
+        $sorties = $sortieRepository->findAll();
+
+        return $this->render('sorties/list.html.twig', [
+            'sorties' => $sorties
         ]);
     }
 
