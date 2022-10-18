@@ -49,7 +49,7 @@ class Sortie
     #[ORM\JoinColumn(nullable: false)]
     private ?Participant $organisateur = null;
 
-    #[ORM\ManyToMany(targetEntity: Participant::cwlass, inversedBy: 'sorties_inscrits')]
+    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sorties_inscrits')]
     private Collection $participants;
 
     public function __construct()
