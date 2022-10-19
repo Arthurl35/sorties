@@ -7,6 +7,7 @@
 {% block body %}
     <h1>Accueil</h1>
 <div>
+    {{ app.user.id }}
     <table>
         <tr>
             <th>Nom de la sortie</th>
@@ -20,13 +21,39 @@
         
     {% for sortie in sorties %}
         <tr>
+
             <td>{{ sortie.nom }}</td>
             <td>{{ sortie.dateHeureDebut | date('d-m-Y')}}</td>
             <td>{{ sortie.dateLimiteInscription | date('d-m-Y')}}</td>
             <td>{{ sortie.participants | length }}/{{ sortie.nbInscriptionMax }}</td>
             <td>{{ sortie.etat.libelle }}</td>
-            <td></td>
+            {% if sortie.participants | length != 0 %}
+                {% for participant in sortie.participants %}
+                    {% if participant.id == app.user.id %}
+                        <td>X</td>
+                    {% else %}
+                        <td>lololololo</td>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <td></td>
+            {% endif %}
+
+{#                {% if participant.id == app.user.id %}#}
+{#                    <td>INSCRIT</td>#}
+{#                {% else %}#}
+{#                    <td>T'es pas inscrit</td>#}
+{#                {% endif %}#}
+
+{#
+{#                {% if participant.id == app.user.id %}#}
+{#                    <td>INSCRIT !</td>#}
+{#                {% else %}#}
+{#                    <td>PAS INSCRIT </td>#}
+{#                {% endif %}#}
+{#            {% endfor %}#}
             <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
+
         </tr>
         {% endfor %}
     </table>
