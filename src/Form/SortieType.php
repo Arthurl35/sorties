@@ -11,6 +11,7 @@ use App\Repository\SiteRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -48,6 +49,56 @@ class SortieType extends AbstractType
                 'query_builder' => function (LieuRepository $lieuRepository ){
                     return $lieuRepository->createQueryBuilder('s')->addGroupBy('s.nom');
                 }
+            ])
+            ->add('add_lieu', ButtonType::class, [
+                'attr' => ['id' => 'btn_add_lieu']
+            ])
+            ->add('nom_lieu', TextType::class, [
+                'label' => 'Nom du lieu :',
+                'required' => false,
+                'attr' => [
+                    'class' => 'f_lieu',
+                    'display' => 'none'
+                ]
+            ])
+            ->add('rue_lieu', TextType::class, [
+                'label' => 'Rue :',
+                'required' => false,
+                'attr' => [
+                    'class' => 'f_lieu',
+                    'display' => 'none'
+                ]
+            ])
+            ->add('ville_lieu', TextType::class, [
+                'label' => 'Ville :',
+                'required' => false,
+                'attr' => [
+                    'class' => 'f_lieu',
+                    'display' => 'none'
+                ]
+            ])
+            ->add('cp_lieu', TextType::class, [
+                'label' => 'Code postal :',
+                'required' => false,
+                'attr' => [
+                    'class' => 'f_lieu',
+                    'display' => 'none'
+                ]
+            ])
+            ->add('latitude_lieu', TextType::class, [
+                'label' => 'Latitude :',
+                'required' => false,
+                'attr' => [
+                    'class' => 'f_lieu',
+                    'display' => 'none'
+                ]
+            ])
+            ->add('longitude_lieu', TextType::class, [
+                'label' => 'Longitude :',
+                'attr' => [
+                    'class' => 'f_lieu',
+                    'display' => 'none'
+                ]
             ])
             ->add('enregistrer', SubmitType::class)
             ->add('publier', SubmitType::class)

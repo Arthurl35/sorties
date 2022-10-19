@@ -52,6 +52,24 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sorties_inscrits')]
     private Collection $participants;
 
+    // attribut de lieu non présent en bdd (utilisé pour le form)
+
+    private ?string $nom_lieu = null;
+
+
+    private ?string $rue_lieu = null;
+
+
+    private ?string $ville_lieu = null;
+
+
+    private ?string $cp_lieu = null;
+
+
+    private ?string $latitude_lieu = null;
+
+    private ?string $longitude_lieu = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -202,6 +220,78 @@ class Sortie
     public function removeParticipant(Participant $participant): self
     {
         $this->participants->removeElement($participant);
+
+        return $this;
+    }
+
+    public function getNomLieu(): ?string
+    {
+        return $this->nom_lieu;
+    }
+
+    public function setNomLieu(?string $nom_lieu): self
+    {
+        $this->nom_lieu = $nom_lieu;
+
+        return $this;
+    }
+
+    public function getRueLieu(): ?string
+    {
+        return $this->rue_lieu;
+    }
+
+    public function setRueLieu(?string $rue_lieu): self
+    {
+        $this->rue_lieu = $rue_lieu;
+
+        return $this;
+    }
+
+    public function getVilleLieu(): ?string
+    {
+        return $this->ville_lieu;
+    }
+
+    public function setVilleLieu(?string $ville_lieu): self
+    {
+        $this->ville_lieu = $ville_lieu;
+
+        return $this;
+    }
+
+    public function getCpLieu(): ?string
+    {
+        return $this->cp_lieu;
+    }
+
+    public function setCpLieu(?string $cp_lieu): self
+    {
+        $this->cp_lieu = $cp_lieu;
+
+        return $this;
+    }
+
+    public function getLatitudeLieu(): ?string
+    {
+        return $this->latitude_lieu;
+    }
+
+    public function setLatitudeLieu(?string $latitude_lieu): self
+    {
+        $this->latitude_lieu = $latitude_lieu;
+
+        return $this;
+    }
+
+    public function getLongitudeLieu(): ?string
+    {
+        return $this->longitude_lieu;
+    }
+
+    public function setLongitudeLieu(?string $longitude_lieu): self
+    {
+        $this->longitude_lieu = $longitude_lieu;
 
         return $this;
     }
