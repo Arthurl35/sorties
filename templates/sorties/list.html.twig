@@ -17,6 +17,7 @@
             <th>Inscrit</th>
             <th>Organisateur</th>
         </tr>
+        
     {% for sortie in sorties %}
         <tr>
             <td>{{ sortie.nom }}</td>
@@ -28,7 +29,6 @@
             <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
         </tr>
         {% endfor %}
-
     </table>
 </div>
 {% endblock %}

@@ -45,7 +45,7 @@ class Sortie
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     private ?Site $site = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sorties_organisees')]
+    #[ORM\ManyToOne(inversedBy: 'sorties_organisees', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Participant $organisateur = null;
 

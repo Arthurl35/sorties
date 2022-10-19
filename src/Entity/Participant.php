@@ -279,4 +279,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
 }

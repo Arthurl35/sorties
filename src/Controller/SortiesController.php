@@ -7,6 +7,7 @@ namespace App\Controller;
     use App\Entity\Sortie;
     use App\Form\SortieType;
     use App\Repository\EtatRepository;
+    use App\Repository\ParticipantRepository;
     use App\Repository\SortieRepository;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Component\HttpFoundation\Request;
@@ -29,14 +30,13 @@ class SortiesController extends AbstractController
 
     #[Route('/add', name: 'add')]
     #[Route('/edit/{id}', name: 'edit', requirements: ['id' => '\d+'])]
-    public function add(Request $request, SortieRepository $sortieRepository, int $id = null): Response
+    public function add(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository, int $id = null): Response
     {
         //simule un user co
-        $user = new Participant();
-        $user->setId(1);
+        $user = $participantRepository->find(11);
 
         //récupère les états existants
-        $listeEtat = EtatRepository::class->findAll();
+        $etatEnregistrer = $etatRepository->find(1);
 
         if ($id) {
             $sortie = $sortieRepository->find($id);
@@ -76,28 +76,39 @@ class SortiesController extends AbstractController
 
                 if ($sortie->getEtat() != null && $sortie->getEtat()->getId() != 1) {
                     $this->addFlash('error', 'action impossible sur une sortie ' . $sortie->getEtat()->getLibelle() . ' !');
+
+                    return $this->render('sorties/edit.html.twig', [
+                        'sortieForm' => $sortieForm->createView()
+                    ]);
                 } else {
-                    $sortie->setEtat($listeEtat[0]);
+                    $sortie->setEtat($etatEnregistrer);
 
                     //enregistrement des données
-                    $sortieRepository->add($sortie, true);
+                    if(!$sortieRepository->findBy(['nom' => $sortie->getNom()])) {
+                        $sortieRepository->save($sortie, true);
+                        $this->addFlash('success', 'sortie créée !');
+                    }
+                    else {
+                        $this->addFlash('error', 'une sortie existe déjà sous ce nom !');
 
-                    $this->addFlash('success', 'sortie créée !');
+                        return $this->render('sorties/add.html.twig', [
+                            'sortieForm' => $sortieForm->createView()
+                        ]);
+                    }
                 }
             }
-            //enregistrement des données
-            $sortieRepository->add($sortie, true);
 
             //redirection vers la page de détail
-            return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
+            //return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
+            return $this->redirectToRoute('sortie_index');
 
         }
         if ($id) {
-            return $this->render('sortie/edit.html.twig', [
+            return $this->render('sorties/edit.html.twig', [
                 'sortieForm' => $sortieForm->createView()
             ]);
         } else {
-            return $this->render('sortie/add.html.twig', [
+            return $this->render('sorties/add.html.twig', [
                 'sortieForm' => $sortieForm->createView()
             ]);
         }
