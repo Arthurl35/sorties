@@ -1,14 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-        {{ parent() }} | Ajouter
+    {{ parent() }} | Ajouter
+{% endblock %}
+
+{% block chargeJs %}
+    <script src="{{ asset('js/sortie.js') }}"></script>
 {% endblock %}
 
 {% block body %}
     <h1>Créer une sortie</h1>
-<div>
-    {{ form_start(sortieForm) }}
-    {{ form_widget(sortieForm) }}
-    {{ form_end(sortieForm) }}
-</div>
+    <div>
+        {{ form_start(sortieForm) }}
+            {{ form_widget(sortieForm) }}
+        {{ form_end(sortieForm) }}
+
+        <a type="button" onclick="document.forms['sortie'].submit(); document.forms['lieu'].submit();">envoyer test</a>
+    </div>
+{% endblock %}
+
+{% block extraJs %}
+    <script>
+        sortie();
+    </script>
 {% endblock %}
