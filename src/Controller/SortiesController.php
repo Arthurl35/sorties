@@ -18,7 +18,7 @@ namespace App\Controller;
 class SortiesController extends AbstractController
 {
     #[Route('', name: 'index')]
-    public function index(): Response
+    public function index(SortieRepository $sortieRepository): Response
     {
         $sorties = $sortieRepository->findAll();
 
