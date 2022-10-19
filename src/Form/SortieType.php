@@ -11,6 +11,7 @@ use App\Repository\SiteRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -27,7 +28,7 @@ class SortieType extends AbstractType
 
         $builder
             ->add('nom', TextType::class, ['label' => 'nom de la sortie :'])
-            ->add('dateHeureDebut',DateType::class, [
+            ->add('dateHeureDebut',DateTimeType::class, [
                 'label' => 'Date et heure de la sortie :',
                 'html5' => true,
                 'widget' => 'single_text'

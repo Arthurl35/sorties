@@ -84,16 +84,30 @@ class SortiesController extends AbstractController
                     $sortie->setEtat($etatEnregistrer);
 
                     //enregistrement des données
-                    if(!$sortieRepository->findBy(['nom' => $sortie->getNom()])) {
-                        $sortieRepository->save($sortie, true);
-                        $this->addFlash('success', 'sortie créée !');
-                    }
-                    else {
+                    if($sortieRepository->findBy(['nom' => $sortie->getNom()])) {
                         $this->addFlash('error', 'une sortie existe déjà sous ce nom !');
 
                         return $this->render('sorties/add.html.twig', [
                             'sortieForm' => $sortieForm->createView()
                         ]);
+                    }
+                    else if($sortie->getDateHeureDebut() < new \DateTime() && $sortie->getDateLimiteInscription() < new \DateTime()){
+                        $this->addFlash('error', 'La date renseigné correspond au passé !');
+
+                        return $this->render('sorties/add.html.twig', [
+                            'sortieForm' => $sortieForm->createView()
+                        ]);
+                    }
+                    else if($sortie->getDateHeureDebut() < $sortie->getDateLimiteInscription()){
+                        $this->addFlash('error', 'La date limite d\'inscription ne peux pas être antérieur à la date de la sortie !');
+
+                        return $this->render('sorties/add.html.twig', [
+                            'sortieForm' => $sortieForm->createView()
+                        ]);
+                    }
+                    else {
+                        $sortieRepository->save($sortie, true);
+                        $this->addFlash('success', 'sortie créée !');
                     }
                 }
             }

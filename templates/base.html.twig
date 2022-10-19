@@ -4,16 +4,30 @@
         <meta charset="UTF-8">
         <link rel="icon" href="{{ asset('img/icon.png') }}">
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
         <title>{% block title %}Sorties !{% endblock %}</title>
-
     </head>
-<body>
-<div class="container">
-    <header>
-        <h1><img src="{{ asset('img/icon.png') }}" alt="Sorties !"></h1>
-        {% include('menu/nav.html.twig') %}
-    </header>
-        {% block body %}{% endblock %}
-</div>
-</body>
+    <body>
+        <div class="container">
+            <header>
+                <h1><img src="{{ asset('img/icon.png') }}" alt="Sorties !"></h1>
+                {% include('menu/nav.html.twig') %}
+            </header>
+            <main>
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="flash flash-{{ label }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% block body %}{% endblock %}
+            </main>
+            <footer>
+
+            </footer>
+        </div>
+        {% block extraCss %}{% endblock %}
+        {% block extraJs %}{% endblock %}
+    </body>
 </html>
