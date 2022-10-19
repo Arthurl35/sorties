@@ -1,5 +1,4 @@
 <?php
-
 namespace App\DataFixtures;
 
 use App\Entity\Etat;
@@ -12,41 +11,31 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
 class AppFixtures extends Fixture
 {
     private UserPasswordHasherInterface $userPasswordHasher;
     private Generator $generator;
     private ObjectManager $manager;
-
     public function __construct(UserPasswordHasherInterface $userPasswordHasher)
     {
         $this->userPasswordHasher = $userPasswordHasher;
         $this->generator = Factory::create('fr_FR');
     }
-
     public function load(ObjectManager $manager): void
     {
         $this->manager = $manager;
-
         $this->addUsers();
 
         $this->addSorties();
     }
-
     public function addUsers(){
-
-
         $sites = ['Nantes','Rennes','Quimper','Niort'];
-
         for($i = 0; $i < 10; $i++){
-
             $Participant = new Participant();
-
             $site = new Site();
             $site->setNom($this->generator->randomElement($sites));
-
             $Participant->setRoles(['ROLE_USER'])
+                ->setBackdrop($this->generator->word . ".png")
                 ->setEmail($this->generator->email)
                 ->setPrenom($this->generator->firstName)
                 ->setNom($this->generator->lastName)
@@ -56,14 +45,10 @@ class AppFixtures extends Fixture
                 ->setPassword($this->userPasswordHasher->hashPassword($Participant, '123456'))
                 ->setSite($site);
 
-
             $this->manager->persist($Participant);
             $this->manager->persist($site);
-
         }
-
         $this->manager->flush();
-
     }
 
     public function addSorties(){
