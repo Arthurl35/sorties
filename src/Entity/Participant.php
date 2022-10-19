@@ -291,11 +291,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->backdrop = $backdrop;
 
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
-
         return $this;
     }
 

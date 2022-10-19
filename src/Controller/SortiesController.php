@@ -23,8 +23,9 @@ class SortiesController extends AbstractController
     {
         $sorties = $sortieRepository->findAll();
 
+
         return $this->render('sorties/list.html.twig', [
-            'sorties' => $sorties
+            'sorties' => $sorties,
         ]);
     }
 

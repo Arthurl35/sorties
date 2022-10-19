@@ -40,7 +40,7 @@ class ProfilController extends AbstractController
         if($participantForm->isSubmitted() && $participantForm->isValid()){
 
                 //gestion de l'upload de l'image
-                $backdrop = $participantForm->get('backdrop')->getData();
+                $backdrop = $participantForm->get('backdrops')->getData();
                 $participant->setBackdrop($upload->saveFile($backdrop, $participant->getNom(), $this->getParameter('sorties_backdrop_dir')));
 
 
