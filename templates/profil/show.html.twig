@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Detail
+{% endblock %}
+
+
+
+
+{% block body %}
+            <h2>{{ participant.nom }}</h2>
+            <div>Prénom : {{ participant.prenom }}</div>
+            <div>Nom : {{ participant.nom }}</div>
+            <div>Téléphone : {{ participant.telephone }}</div>
+            <div>Email : {{ participant.email}}</div>
+            <div>Site de rattachement : {{ participant.site.nom}}</div>
+            <img src="{{ asset('img/backdrops/' ~ participant.backdrop)}}" alt="">
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

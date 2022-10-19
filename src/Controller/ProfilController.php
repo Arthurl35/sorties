@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Site;
-use App\Form\SortieType;
+
+use App\Form\ProfilType;
 use App\Repository\ParticipantRepository;
 use App\Entity\Participant;
+use App\Utils\Upload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,16 +17,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProfilController extends AbstractController
 {
     #[Route('/detail/{id}', name: 'show', requirements: ['id' => '\d+'])]
-    public function show(ParticipantRepository $participantRepository, $id): Response
+    public function show(ParticipantRepository $participantRepository, $id = null): Response
     {
-        return $this->render('profil/home.html.twig', [
-            '$participantAffichage' => '$participantRepository',
+        $particpant = $participantRepository->find($id);
+        return $this->render('profil/show.html.twig', [
+            'participant' => $particpant
         ]);
     }
 
     #[Route('/modifier/{id}', name: 'edit', requirements: ['id' => '\d+'])]
     public function ModifierParticipant(Request $request,
                                         ParticipantRepository $participantRepository,
+                                        Upload $upload,
                                         $id = null): Response
     {
         $participant = $participantRepository->find($id);
@@ -36,6 +40,9 @@ class ProfilController extends AbstractController
         if($participantForm->isSubmitted() && $participantForm->isValid()){
 
                 //gestion de l'upload de l'image
+                $backdrop = $participantForm->get('backdrop')->getData();
+                $participant->setBackdrop($upload->saveFile($backdrop, $participant->getNom(), $this->getParameter('sorties_backdrop_dir')));
+
 
                 //enregistrement des données
                 $participantRepository->add($participant, true);
