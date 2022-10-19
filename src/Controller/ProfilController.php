@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Site;
+
 use App\Form\ProfilType;
 use App\Repository\ParticipantRepository;
 use App\Entity\Participant;
@@ -32,7 +33,7 @@ class ProfilController extends AbstractController
     {
         $participant = $participantRepository->find($id);
 
-        $participantForm = $this->createForm(ProfilType::class, $participant, ['data' => $participant]);
+        $participantForm = $this->createForm(SortieType::class, $participant, ['data' => $participant]);
 
         $participantForm->handleRequest($request);
 
