@@ -46,13 +46,17 @@
             <td>{{ sortie.participants | length }}/{{ sortie.nbInscriptionMax }}</td>
             <td>{{ sortie.etat.libelle }}</td>
             <td>{% if sortie.participants | length != 0 %}
+
                 {% for participant in sortie.participants %}
+
                     {% if participant.id == app.user.id %}
-                        <span> X</span>
+                        <span> ✔</span>
                     {% endif %}
                 {% endfor %}
             {% else %}
-            {% endif %}
+                <span>❌</span>
+                {% endif %}
+
             </td>
             <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
         </tr>
