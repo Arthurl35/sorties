@@ -29,7 +29,7 @@
             <td>{{ sortie.etat.libelle }}</td>
             <td>{% if sortie.participants | length != 0 %}
                 {% for participant in sortie.participants %}
-                    {% if participant.nom == app.user.nom %}
+                    {% if participant.id == app.user.id %}
                         <span> X</span>
                     {% endif %}
                 {% endfor %}
