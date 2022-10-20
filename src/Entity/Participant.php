@@ -297,7 +297,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         // TODO: Implement __toString() method.
-        return $this->backdrop . $this->nom . $this->prenom . $this->email .$this->actif . $this->telephone ;
+        return $this->backdrop . $this->nom . $this->prenom . $this->email .$this->actif . $this->telephone;
     }
 
 
