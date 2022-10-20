@@ -1,9 +1,13 @@
-<nav>
-    <ul>
-        {% if app.user %}
-            <li><a href="{{ path('app_logout') }}" title="Logout">Se déconnecter {{ app.user.nom | capitalize }} {{ app.user.prenom | capitalize }}</a> </li>
-        {% else %}
-            <li><a href="{{ path('app_login') }}" title="Login">Se connecter</a></li>
-        {% endif %}
-    </ul>
-</nav>
+
+<a href="" class="logo"><img src="{{ asset('img/icon.png') }}" alt="Sorties !"></a>
+
+<input class="menu-btn" type="checkbox" id="menu-btn" />
+<label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
+<ul class="menu">
+    {% if app.user %}
+        <li><a href="{{ path('app_logout') }}" title="Logout"> Se déconnecter {{ app.user.nom | capitalize }} {{ app.user.prenom | capitalize }}</a></li>
+    {% else %}
+        <li><a href="{{ path('app_login') }}"  title="Login">Se connecter</a></li>
+    {% endif %}
+    <li><a href="{{ path('sortie_index') }}"   title="Accueil">Accueil</a></li>
+</ul>
