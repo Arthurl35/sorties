@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -51,8 +52,10 @@ class SortieType extends AbstractType
                 }
             ])
             ->add('add_lieu', ButtonType::class, [
-                'attr' => ['id' => 'btn_add_lieu']
+                'label' => 'ajouter un lieu',
+                'attr' => ['class' => 'btn_add_lieu']
             ])
+
             ->add('nom_lieu', TextType::class, [
                 'label' => 'Nom du lieu :',
                 'required' => false,
@@ -77,7 +80,7 @@ class SortieType extends AbstractType
                     'display' => 'none'
                 ]
             ])
-            ->add('cp_lieu', TextType::class, [
+            ->add('cp_lieu', NumberType::class, [
                 'label' => 'Code postal :',
                 'required' => false,
                 'attr' => [
@@ -85,7 +88,7 @@ class SortieType extends AbstractType
                     'display' => 'none'
                 ]
             ])
-            ->add('latitude_lieu', TextType::class, [
+            ->add('latitude_lieu', NumberType::class, [
                 'label' => 'Latitude :',
                 'required' => false,
                 'attr' => [
@@ -93,19 +96,18 @@ class SortieType extends AbstractType
                     'display' => 'none'
                 ]
             ])
-            ->add('longitude_lieu', TextType::class, [
+            ->add('longitude_lieu', NumberType::class, [
                 'label' => 'Longitude :',
+                'required' => false,
                 'attr' => [
                     'class' => 'f_lieu',
                     'display' => 'none'
                 ]
             ])
             ->add('enregistrer', SubmitType::class)
-            ->add('publier', SubmitType::class)
+            ->add('modifier', SubmitType::class)
             ->add('annuler', SubmitType::class)
-
-
-
+            ->add('supprimer', SubmitType::class)
         ;
     }
 

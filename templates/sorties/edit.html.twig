@@ -4,11 +4,23 @@
     {{ parent() }} | Editer
 {% endblock %}
 
+{% block chargeJs %}
+    <script src="{{ asset('js/sortie.js') }}"></script>
+{% endblock %}
+
 {% block body %}
     <h2 class="body-title">Modifier une sortie</h2>
     <div>
+
         {{ form_start(sortieForm) }}
         {{ form_widget(sortieForm) }}
         {{ form_end(sortieForm) }}
+
     </div>
+{% endblock %}
+
+{% block extraJs %}
+    <script>
+        sortie();
+    </script>
 {% endblock %}
