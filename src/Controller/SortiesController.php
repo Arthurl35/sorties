@@ -3,10 +3,13 @@
 namespace App\Controller;
 
     use App\Entity\Etat;
+    use App\Entity\Lieu;
     use App\Entity\Participant;
     use App\Entity\Sortie;
+    use App\Form\LieuType;
     use App\Form\SortieType;
     use App\Repository\EtatRepository;
+    use App\Repository\LieuRepository;
     use App\Repository\ParticipantRepository;
     use App\Repository\SortieRepository;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,7 +34,7 @@ class SortiesController extends AbstractController
 
     #[Route('/add', name: 'add')]
     #[Route('/edit/{id}', name: 'edit', requirements: ['id' => '\d+'])]
-    public function add(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository, int $id = null): Response
+    public function add(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository,int $id = null): Response
     {
         //simule un user co
         $user = $participantRepository->find(11);
@@ -41,8 +44,10 @@ class SortiesController extends AbstractController
 
         if ($id) {
             $sortie = $sortieRepository->find($id);
+            $lieu = $sortie->getLieu();
         } else {
             $sortie = new Sortie();
+            $lieu = new Lieu();
         }
 
         $sortieForm = $this->createForm(SortieType::class, $sortie, ['data' => $sortie]);
