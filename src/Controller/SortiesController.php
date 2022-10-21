@@ -11,7 +11,9 @@ namespace App\Controller;
     use App\Repository\EtatRepository;
     use App\Repository\LieuRepository;
     use App\Repository\ParticipantRepository;
+    use App\Repository\SiteRepository;
     use App\Repository\SortieRepository;
+    use phpDocumentor\Reflection\Types\Array_;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
@@ -22,13 +24,22 @@ namespace App\Controller;
 class SortiesController extends AbstractController
 {
     #[Route('', name: 'index')]
-    public function index(SortieRepository $sortieRepository): Response
+    public function index(SortieRepository $sortieRepository, SiteRepository $siteRepository, Request $request): Response
     {
         $sorties = $sortieRepository->findAll();
 
+        //Filtres
+//        $filterForm = $this->createForm(SortieType::class, $sorties, ['data' => $sorties]);
+//        $filterForm->handleRequest($request);
 
+        //handle permet de savoir dans quel cas nous sommes
+//        if($filterForm->isSubmitted() && $filterForm->isValid()){
+//
+//
+//        }
         return $this->render('sorties/list.html.twig', [
             'sorties' => $sorties,
+//            'filterForm' => $filterForm,
         ]);
     }
 
