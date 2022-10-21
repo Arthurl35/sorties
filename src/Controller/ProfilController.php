@@ -33,7 +33,7 @@ class ProfilController extends AbstractController
     {
         $participant = $participantRepository->find($id);
 
-        $participantForm = $this->createForm(SortieType::class, $participant, ['data' => $participant]);
+        $participantForm = $this->createForm(ProfilType::class, $participant, ['data' => $participant]);
 
         $participantForm->handleRequest($request);
 

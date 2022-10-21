@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 //préfixe de toutes mes routes du controller
 #[Route('/sorties', name: 'sortie_')]
 class SortiesController extends AbstractController
@@ -60,13 +61,25 @@ class SortiesController extends AbstractController
 
 
     #[Route('', name: 'index')]
+
     public function index(SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
+
     {
         $this->onLoad($sortieRepository, $etatRepository);
         $sorties = $sortieRepository->findAll();
 
+        //Filtres
+//        $filterForm = $this->createForm(SortieType::class, $sorties, ['data' => $sorties]);
+//        $filterForm->handleRequest($request);
+
+        //handle permet de savoir dans quel cas nous sommes
+//        if($filterForm->isSubmitted() && $filterForm->isValid()){
+//
+//
+//        }
         return $this->render('sorties/list.html.twig', [
-            'sorties' => $sorties
+            'sorties' => $sorties,
+//            'filterForm' => $filterForm,
         ]);
     }
 
@@ -74,6 +87,8 @@ class SortiesController extends AbstractController
     #[Route('/edit/{id}', name: 'edit', requirements: ['id' => '\d+'])]
     public function addOrEdit(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository, int $id = null): Response
     {
+        var_dump($request->getSession()->get('participant'));
+
         //simule un user co
         $user = $participantRepository->find(11);
 

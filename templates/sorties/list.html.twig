@@ -1,34 +1,65 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-        {{ parent() }} | Accueil
+    {{ parent() }} | Accueil
 {% endblock %}
 
 {% block body %}
-    <h1>Accueil</h1>
-<div>
-    <table>
-        <tr>
-            <th>Nom de la sortie</th>
-            <th>Date de la sortie</th>
-            <th>Cloture</th>
-            <th>Inscrits/places</th>
-            <th>Etat</th>
-            <th>Inscrit</th>
-            <th>Organisateur</th>
-        </tr>
-        
-    {% for sortie in sorties %}
-        <tr>
-            <td>{{ sortie.nom }}</td>
-            <td>{{ sortie.dateHeureDebut | date('d-m-Y')}}</td>
-            <td>{{ sortie.dateLimiteInscription | date('d-m-Y')}}</td>
-            <td>{{ sortie.participants | length }}/{{ sortie.nbInscriptionMax }}</td>
-            <td>{{ sortie.etat.libelle }}</td>
-            <td></td>
-            <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+
+    <h2 class="body-title">Accueil</h2>
+    <fieldset>
+        <legend>Filtres : </legend>
+        <div>
+            <input type="checkbox" id="organisateur" name="organisateur" checked>
+            <label for="organisateur">Sorties dont je suis l'organisateur/trice</label>
+        </div>
+        <div>
+            <input type="checkbox" id="inscrit" name="inscrit">
+            <label for="inscrit">Sorties auxquelles je suis inscrit(e)</label>
+        </div>
+        <div>
+            <input type="checkbox" id="pasInscrit" name="pasInscrit">
+            <label for="pasInscrit">Sorties auxquelles je ne suis pas inscrit(e)</label>
+        </div>
+        <div>
+            <input type="checkbox" id="expirer" name="expirer">
+            <label for="expirer">Sorties passées</label>
+        </div>
+    </fieldset>
+    <div>
+        <table>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Cloture</th>
+                <th>Inscrits/places</th>
+                <th>Etat</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
+            </tr>
+
+            {% for sortie in sorties %}
+                <tr>
+
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut | date('d-m-Y') }}</td>
+                    <td>{{ sortie.dateLimiteInscription | date('d-m-Y') }}</td>
+                    <td>{{ sortie.participants | length }}/{{ sortie.nbInscriptionMax }}</td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    <td>{% if sortie.participants | length != 0 %}
+
+                            {% for participant in sortie.participants %}
+
+                                {% if participant.id == app.user.id %}
+                                    <span> ✔</span>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+                    </td>
+                    <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}
