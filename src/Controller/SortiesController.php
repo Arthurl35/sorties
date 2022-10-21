@@ -12,6 +12,7 @@ use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
+use App\Utils\MajEtatSorties;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,9 +22,47 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/sorties', name: 'sortie_')]
 class SortiesController extends AbstractController
 {
-    #[Route('', name: 'index')]
-    public function index(SortieRepository $sortieRepository): Response
+
+    public function __construct()
     {
+
+    }
+
+    public function onLoad(SortieRepository $sortieRepository, EtatRepository $etatRepository): void
+    {
+
+        $sorties = $sortieRepository->findAll();
+
+        //1 Créée
+        //2 Ouverte date
+        //3 Clôturée date_limite inscription
+        //4 Activité en cours date_sortie = date jour
+        //5 Passé date_sortie < date jour
+        //6 Annulée
+        foreach ($sorties as $sortie){
+            switch ($sortie->getEtat()->getId()){
+                case 1:
+                    $sortie->setEtat($etatRepository->find(2));
+                    break;
+                case 2:
+                    if($sortie->getDateLimiteInscription() < new \DateTime()) $sortie->setEtat($etatRepository->find(3));
+                    break;
+                case 3:
+                    if($sortie->getDateHeureDebut() < new \DateTime()) $sortie->setEtat($etatRepository->find(4));
+                    break;
+                case 4:
+                    if($sortie->getDateHeureDebut() + 1 < new \DateTime()) $sortie->setEtat($etatRepository->find(4));
+                    break;
+            }
+        }
+
+    }
+
+
+    #[Route('', name: 'index')]
+    public function index(SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
+    {
+        $this->onLoad($sortieRepository, $etatRepository);
         $sorties = $sortieRepository->findAll();
 
         return $this->render('sorties/list.html.twig', [
@@ -46,7 +85,7 @@ class SortiesController extends AbstractController
         $etatPasse = $etatRepository->find(5);
         $etatAnnule = $etatRepository->find(6);
 
-        $etatAutorise = [1];
+        $etatAutorise = [1,2];
 
         //libelle du btn submit à écouter
         $libelleSubmit = "enregistrer";
@@ -89,7 +128,8 @@ class SortiesController extends AbstractController
             $sortie->setSite($user->getSite());
             $sortie->setOrganisateur($user);
 
-
+    var_dump($sortie->getDateHeureDebut());
+            var_dump($sortieForm->get('dateHeureDebut')->getData());
             //1 Créée
             //2 Ouverte
             //3 Clôturée
