@@ -26,7 +26,7 @@ class AppFixtures extends Fixture
         $this->manager = $manager;
         $this->addUsers();
 
-        $this->addSorties();
+        //$this->addSorties();
     }
     public function addUsers(){
         $sites = ['Nantes','Rennes','Quimper','Niort'];
