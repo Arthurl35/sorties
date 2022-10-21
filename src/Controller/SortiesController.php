@@ -36,6 +36,8 @@ class SortiesController extends AbstractController
     #[Route('/edit/{id}', name: 'edit', requirements: ['id' => '\d+'])]
     public function addOrEdit(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository, int $id = null): Response
     {
+        var_dump($request->getSession()->get('participant'));
+
         //simule un user co
         $user = $participantRepository->find(11);
 

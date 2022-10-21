@@ -5,92 +5,109 @@
             <a href="{{ path('sortie_index') }}">
                 <i class="fa fa-home fa-2x"></i>
                 <span class="nav-text">
-                            Accueil
-                        </span>
-            </a>
-        <li>
-            <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
-                <i class="fa fa-user fa-2x"></i>
-                <span class="nav-text">
-                            Modifier mon profil
-                        </span>
+                    Accueil
+                </span>
             </a>
         </li>
-        <li>
-            <a href="{{ path('profil_show', {'id':app.user.id}) }}">
-                <i class="fa fa-2x"><img
-                            src="{{ asset('img/backdrops/' ~ app.user.backdrop) }}" alt="lol"
-                            class="rounded-circle-icon"
-                            alt="Black and White Portrait of a Man"
-                            loading="lazy"
-                    /></i>
-                <span class="nav-text">
+        {% if app.user %}
+            <li>
+                <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                    <i class="fa fa-user fa-2x"></i>
+                    <span class="nav-text">
+                                Modifier mon profil
+                            </span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('profil_show', {'id':app.user.id}) }}">
+                    <i class="fa fa-2x"><img
+                                src="{{ asset('img/backdrops/' ~ app.user.backdrop) }}" alt="lol"
+                                class="rounded-circle-icon"
+                                alt="Black and White Portrait of a Man"
+                                loading="lazy"
+                        /></i>
+                    <span class="nav-text">
                             Mon Profil ({{ app.user.nom | capitalize }} {{ app.user.prenom | capitalize }})
                         </span>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <i class="fa fa-table fa-2x"></i>
-                <span class="nav-text">
-                            Créer une sortie
-                        </span>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <i class="fa fa-font fa-2x"></i>
-                <span class="nav-text">
-                           Afficher sortie
-                        </span>
-            </a>
-        </li>
-        <li>
-            <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
-                <i class="fa fa-user fa-2x"></i>
-                <span class="nav-text">
-                            Modifier une sortie
-                        </span>
-            </a>
-        </li>
-        <li>
-            <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
-                <i class="fa fa-user fa-2x"></i>
-                <span class="nav-text">
-                            Annuler
-                        </span>
-            </a>
-        </li>
-        <li>
-            <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
-                <i class="fa fa-user fa-2x"></i>
-                <span class="nav-text">
-                            Gerer les villes
-                        </span>
-            </a>
-        </li>
-        <li>
-            <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
-                <i class="fa fa-user fa-2x"></i>
-                <span class="nav-text">
-                            Gerer les sites
-                        </span>
-            </a>
-        </li>
+                </a>
+            </li>
 
+            <li>
+                <a href="#">
+                    <i class="fa fa-table fa-2x"></i>
+                    <span class="nav-text">
+                                Créer une sortie
+                            </span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-font fa-2x"></i>
+                    <span class="nav-text">
+                               Afficher sortie
+                            </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                    <i class="fa fa-user fa-2x"></i>
+                    <span class="nav-text">
+                                Modifier une sortie
+                            </span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                    <i class="fa fa-user fa-2x"></i>
+                    <span class="nav-text">
+                                Annuler
+                            </span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                    <i class="fa fa-user fa-2x"></i>
+                    <span class="nav-text">
+                                Gerer les villes
+                            </span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                    <i class="fa fa-user fa-2x"></i>
+                    <span class="nav-text">
+                                Gerer les sites
+                            </span>
+                </a>
+            </li>
+        {% endif %}
 
     </ul>
 
-    <ul class="logout">
-        <li>
-            <a href="{{ path('app_logout') }}">
-                <i class="fa fa-power-off fa-2x"></i>
-                <span class="nav-text">
-                            Se déconnecter
-                        </span>
-            </a>
-        </li>
-    </ul>
+    {% if app.user %}
+        <ul class="logout">
+            <li>
+                <a href="{{ path('app_logout') }}">
+                    <i class="fa fa-power-off fa-2x"></i>
+                    <span class="nav-text">
+                                Se déconnecter
+                            </span>
+                </a>
+            </li>
+        </ul>
+    {% else %}
+        <ul class="login">
+            <li>
+                <a href="{{ path('app_login') }}">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span class="nav-text">
+                        Se connecter
+                    </span>
+                </a>
+            </li>
+        </ul>
+    {% endif %}
 </nav>
 
 <!-- Navbar center -->
