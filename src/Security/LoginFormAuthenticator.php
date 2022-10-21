@@ -40,7 +40,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
 
 
-        $request->getSession()->set('profil', $profil);
+        $request->getSession()->set('participant', $profil);
         $request->getSession()->set(Security::LAST_USERNAME, $email);
 
 

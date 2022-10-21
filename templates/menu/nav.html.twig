@@ -1,55 +1,106 @@
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white mt-5">
-    <!-- Container wrapper -->
-    <div class="container-fluid">
-
-        <!-- Collapsible wrapper -->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <!-- Navbar brand -->
-            <a class="navbar-brand mt-2 mt-lg-0" href="#">
-                <img src="{{ asset('img/icon.png') }}" alt="Sorties !"
-                     class="rounded-circle"
-                     height="50"
-                     alt="Black and White Portrait of a Man"
-                     loading="lazy">
+<!-- Navbar Left -->
+<nav class="main-menu">
+    <ul>
+        <li>
+            <a href="{{ path('sortie_index') }}">
+                <i class="fa fa-home fa-2x"></i>
+                <span class="nav-text">
+                            Accueil
+                        </span>
             </a>
-            <!-- Left links -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                {% if app.user %}
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_logout') }}" title="Logout">Se déconnecter {{ app.user.nom | capitalize }} {{ app.user.prenom | capitalize }}</a> </li>
-                {% else %}
-                    <li class="nav-item"><a class="nav-link"href="{{ path('app_login') }}" title="Login">Se connecter</a></li>
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Dashboard</a>
-                </li>
-            </ul>
-            <!-- Left links -->
-        </div>
-        <!-- Collapsible wrapper -->
-
-        <!-- Right elements -->
-        <div class="d-flex align-items-center">
-            <!-- Icon -->
-            <a class="link-secondary me-3" href="#">
-                <i class="fas fa-shopping-cart"></i>
+        <li>
+            <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                <i class="fa fa-user fa-2x"></i>
+                <span class="nav-text">
+                            Modifier mon profil
+                        </span>
             </a>
-
-
-            <!-- Avatar -->
-
-
-                    <img
-                            src="{{ asset('img/backdrops/' ~ app.user.backdrop)}}" alt="lol"
-                            class="rounded-circle"
-                            height="25"
+        </li>
+        <li>
+            <a href="{{ path('profil_show', {'id':app.user.id}) }}">
+                <i class="fa fa-2x"><img
+                            src="{{ asset('img/backdrops/' ~ app.user.backdrop) }}" alt="lol"
+                            class="rounded-circle-icon"
                             alt="Black and White Portrait of a Man"
                             loading="lazy"
-                    />
+                    /></i>
+                <span class="nav-text">
+                            Mon Profil ({{ app.user.nom | capitalize }} {{ app.user.prenom | capitalize }})
+                        </span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa fa-table fa-2x"></i>
+                <span class="nav-text">
+                            Créer une sortie
+                        </span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa fa-font fa-2x"></i>
+                <span class="nav-text">
+                           Afficher sortie
+                        </span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                <i class="fa fa-user fa-2x"></i>
+                <span class="nav-text">
+                            Modifier une sortie
+                        </span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                <i class="fa fa-user fa-2x"></i>
+                <span class="nav-text">
+                            Annuler
+                        </span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                <i class="fa fa-user fa-2x"></i>
+                <span class="nav-text">
+                            Gerer les villes
+                        </span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                <i class="fa fa-user fa-2x"></i>
+                <span class="nav-text">
+                            Gerer les sites
+                        </span>
+            </a>
+        </li>
 
-        </div>
-        <!-- Right elements -->
-    </div>
-    <!-- Container wrapper -->
+
+    </ul>
+
+    <ul class="logout">
+        <li>
+            <a href="{{ path('app_logout') }}">
+                <i class="fa fa-power-off fa-2x"></i>
+                <span class="nav-text">
+                            Se déconnecter
+                        </span>
+            </a>
+        </li>
+    </ul>
 </nav>
-<!-- Navbar -->
+
+<!-- Navbar center -->
+<div class="header-center">
+    <img
+            src="{{ asset('img/icon.png') }}" alt="lol"
+            class="rounded-circle"
+            height="75"
+            alt="Black and White Portrait of a Man"
+            loading="lazy"
+    />
+    <h1>Sortir.com</h1>
+</div>
