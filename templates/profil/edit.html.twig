@@ -6,9 +6,9 @@
 
 {% block body %}
 
-    <h2 class="body-title">{% block formTitle %}MonProfilController{% endblock %}</h2>
+    <h2 class="body-title">{% block formTitle %}Editer mon profil{% endblock %}</h2>
     {{ form_start(profilForm) }}
     {{ form_widget(profilForm) }}
-    <button>{% block buttonLabel %}{% endblock %}</button>
+    <button>{% block buttonLabel %}Enregistrer{% endblock %}</button>
     {{ form_end(profilForm) }}
 {% endblock %}

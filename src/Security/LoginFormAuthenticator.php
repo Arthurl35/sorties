@@ -36,11 +36,10 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $email = $request->request->get('email', '');
 
         $participant = $this->participantRepo->findOneBy(['email' => $email]);
-        $profil = $participant->getBackdrop();
-
-
-
-        $request->getSession()->set('participant', $profil);
+        if($participant != null) {
+            $profil = $participant->getBackdrop();
+            $request->getSession()->set('participant', $profil);
+        }
         $request->getSession()->set(Security::LAST_USERNAME, $email);
 
 
