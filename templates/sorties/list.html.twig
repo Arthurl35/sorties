@@ -1,10 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-        {{ parent() }} | Accueil
+    {{ parent() }} | Accueil
 {% endblock %}
 
 {% block body %}
+
     <h2 class="body-title">Accueil</h2>
     <fieldset>
         <legend>Filtres : </legend>
@@ -26,41 +27,39 @@
         </div>
     </fieldset>
     <div>
-    <table>
-        <tr>
-            <th>Nom de la sortie</th>
-            <th>Date de la sortie</th>
-            <th>Cloture</th>
-            <th>Inscrits/places</th>
-            <th>Etat</th>
-            <th>Inscrit</th>
-            <th>Organisateur</th>
-        </tr>
-        
-    {% for sortie in sorties %}
-        <tr>
+        <table>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Cloture</th>
+                <th>Inscrits/places</th>
+                <th>Etat</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
+            </tr>
 
-            <td>{{ sortie.nom }}</td>
-            <td>{{ sortie.dateHeureDebut | date('d-m-Y')}}</td>
-            <td>{{ sortie.dateLimiteInscription | date('d-m-Y')}}</td>
-            <td>{{ sortie.participants | length }}/{{ sortie.nbInscriptionMax }}</td>
-            <td>{{ sortie.etat.libelle }}</td>
-            <td>{% if sortie.participants | length != 0 %}
+            {% for sortie in sorties %}
+                <tr>
 
-                {% for participant in sortie.participants %}
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut | date('d-m-Y') }}</td>
+                    <td>{{ sortie.dateLimiteInscription | date('d-m-Y') }}</td>
+                    <td>{{ sortie.participants | length }}/{{ sortie.nbInscriptionMax }}</td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    <td>{% if sortie.participants | length != 0 %}
 
-                    {% if participant.id == app.user.id %}
-                        <span> ✔</span>
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                <span>❌</span>
-                {% endif %}
+                            {% for participant in sortie.participants %}
 
-            </td>
-            <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+                                {% if participant.id == app.user.id %}
+                                    <span> ✔</span>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+                    </td>
+                    <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}

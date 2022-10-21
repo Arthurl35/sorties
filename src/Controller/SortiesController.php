@@ -2,33 +2,45 @@
 
 namespace App\Controller;
 
-use App\Entity\Etat;
-use App\Entity\Lieu;
-use App\Entity\Participant;
-use App\Entity\Sortie;
-use App\Form\LieuType;
-use App\Form\SortieType;
-use App\Repository\EtatRepository;
-use App\Repository\LieuRepository;
-use App\Repository\ParticipantRepository;
-use App\Repository\SortieRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+
+    use App\Entity\Etat;
+    use App\Entity\Lieu;
+    use App\Entity\Participant;
+    use App\Entity\Sortie;
+    use App\Form\LieuType;
+    use App\Form\SortieType;
+    use App\Repository\EtatRepository;
+    use App\Repository\LieuRepository;
+    use App\Repository\ParticipantRepository;
+    use App\Repository\SiteRepository;
+    use App\Repository\SortieRepository;
+    use phpDocumentor\Reflection\Types\Array_;
+    use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+    use Symfony\Component\HttpFoundation\Request;
+    use Symfony\Component\HttpFoundation\Response;
+    use Symfony\Component\Routing\Annotation\Route;
 
 //préfixe de toutes mes routes du controller
 #[Route('/sorties', name: 'sortie_')]
 class SortiesController extends AbstractController
 {
     #[Route('', name: 'index')]
-    public function index(SortieRepository $sortieRepository): Response
+    public function index(SortieRepository $sortieRepository, SiteRepository $siteRepository, Request $request): Response
     {
         $sorties = $sortieRepository->findAll();
 
+        //Filtres
+//        $filterForm = $this->createForm(SortieType::class, $sorties, ['data' => $sorties]);
+//        $filterForm->handleRequest($request);
 
+        //handle permet de savoir dans quel cas nous sommes
+//        if($filterForm->isSubmitted() && $filterForm->isValid()){
+//
+//
+//        }
         return $this->render('sorties/list.html.twig', [
             'sorties' => $sorties,
+//            'filterForm' => $filterForm,
         ]);
     }
 
