@@ -27,20 +27,20 @@ class ProfilType extends AbstractType
     {
         $builder
             ->add('prenom', TextType::class, [
-                'label' => 'prénom :',
-                'attr' => ['class' => '']
+            'label' => 'Prénom :',
+            'attr' => ['class' => '']
             ])
             ->add('nom', TextType::class, [
-                'label' => 'nom :',
-                'attr' => ['class' => '']
+            'label' => 'Nom :',
+            'attr' => ['class' => '']
             ])
             ->add('telephone', TextType::class, [
-                'label' => 'telephone :',
-                'attr' => ['class' => '']
+            'label' => 'N° de téléphone :',
+            'attr' => ['class' => '']
             ])
-            ->add('email', EmailType::class, [
-                'label' => 'email :',
-                'attr' => ['class' => '']
+            ->add('email', TextType::class, [
+            'label' => 'Adresse e-mail :',
+            'attr' => ['class' => '']
             ])
             ->add('password', RepeatedType::class, [
                 // instead of being set onto the object directly,
@@ -48,8 +48,8 @@ class ProfilType extends AbstractType
                 'required' => false,
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
-                'first_options'  => ['label' => 'mot de passe :'],
-                'second_options' => ['label' => 'répéter mot de passe :'],
+                'first_options'  => ['label' => 'Mot de passe :'],
+                'second_options' => ['label' => 'Répéter le mot de passe :'],
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
@@ -67,6 +67,7 @@ class ProfilType extends AbstractType
                 'label' => 'site :',
                 'class' => Site::class,
                 'choice_label' => 'nom',
+                'label' => 'Site :',
                 'query_builder' => function (SiteRepository $siteRepository ){
                 return $siteRepository->createQueryBuilder('s')->addGroupBy('s.nom');
                 }
@@ -75,6 +76,7 @@ class ProfilType extends AbstractType
                 'label' => 'photo de profil :',
                 'mapped' => false,
                 'required' => false,
+                'label' => 'Photo de profil :',
                 'constraints' => [
                     new Image([
                         'maxSize' => '7000k',
