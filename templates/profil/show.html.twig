@@ -14,8 +14,7 @@
             <div>Téléphone : {{ participant.telephone }}</div>
             <div>Email : {{ participant.email}}</div>
             <div>Site de rattachement : {{ participant.site.nom}}</div>
-            <button class="btn btn-lg btn-primary" onclick="{{ path('sortie_index') }}">Retour</button>
-
+            <a href="{{ path('sortie_index') }}"><button class="btn btn-lg btn-primary">Retour</button></a>
             <img src="{{ asset('img/backdrops/' ~ participant.backdrop)}}" alt="">
 
 
