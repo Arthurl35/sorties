@@ -29,17 +29,14 @@
         {% endif %}
     {% endif %}
 
-
-    <!-- test pour affiche inscription il faut ajout test si l'état autorise-->
-    {% if inscrit %}
-        <a href="{{ path('sortie_removeRegister', {'idUser':app.user.id, 'idSortie':sortie.id}) }}">Se désinscrire</a>
-    {% else %}
-        <a href="{{ path('sortie_addRegister', {'idUser':app.user.id, 'idSortie':sortie.id}) }}">S'inscrire</a>
+    {% if sortie.etat.id == 1 or sortie.etat.id == 2 %}
+        <!-- test pour affiche inscription il faut ajout test si l'état autorise-->
+        {% if inscrit %}
+            <a href="{{ path('sortie_removeRegister', {'idUser':app.user.id, 'idSortie':sortie.id}) }}">Se désinscrire</a>
+        {% else %}
+            <a href="{{ path('sortie_addRegister', {'idUser':app.user.id, 'idSortie':sortie.id}) }}">S'inscrire</a>
+        {% endif %}
     {% endif %}
-
-
-
-
 
     <h3>Participants</h3>
     <div>

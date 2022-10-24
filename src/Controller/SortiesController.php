@@ -32,30 +32,7 @@ class SortiesController extends AbstractController
     public function onLoad(SortieRepository $sortieRepository, EtatRepository $etatRepository): void
     {
 
-        $sorties = $sortieRepository->findAll();
 
-        //1 Créée
-        //2 Ouverte date
-        //3 Clôturée date_limite inscription
-        //4 Activité en cours date_sortie = date jour
-        //5 Passé date_sortie < date jour
-        //6 Annulée
-        foreach ($sorties as $sortie){
-            switch ($sortie->getEtat()->getId()){
-                case 1:
-                    $sortie->setEtat($etatRepository->find(2));
-                    break;
-                case 2:
-                    if($sortie->getDateLimiteInscription() < new \DateTime()) $sortie->setEtat($etatRepository->find(3));
-                    break;
-                case 3:
-                    if($sortie->getDateHeureDebut() < new \DateTime()) $sortie->setEtat($etatRepository->find(4));
-                    break;
-                case 4:
-                    if($sortie->getDateHeureDebut() + 1 < new \DateTime()) $sortie->setEtat($etatRepository->find(4));
-                    break;
-            }
-        }
 
     }
 
@@ -122,6 +99,8 @@ class SortiesController extends AbstractController
         } else {
             $sortie = new Sortie();
             $sortie->setEtat($etatCree);
+            //on inscrit l'organisateur à la sortie
+            $sortie->getParticipants()->add($user);
         }
 
         $sortieForm = $this->createForm(SortieType::class, $sortie, ['data' => $sortie]);
@@ -221,8 +200,6 @@ class SortiesController extends AbstractController
                             ]);
                         }
                     }
-                    //on inscrit l'organisateur à la sortie
-                    $sortie->getParticipants()->add($user);
 
                     //update des données
                     $sortieRepository->save($sortie, true);
@@ -260,7 +237,7 @@ class SortiesController extends AbstractController
         $sortie = $sortieRepository->find($idSortie);
         if($sortie){
             $etat = $sortie->getEtat();
-            if($etat->getId() != 0 && $etat->getId() != 1){
+            if($etat->getId() != 0 && $etat->getId() != 1 && $etat->getId() != 2){
                 $this->addFlash('error', 'La sortie n\'accepte plus d\'inscription');
                 return $this->redirectToRoute('sortie_index');
             }
@@ -292,7 +269,7 @@ class SortiesController extends AbstractController
         $sortie = $sortieRepository->find($idSortie);
         if($sortie){
             $etat = $sortie->getEtat();
-            if($etat->getId() != 0 && $etat->getId() != 1){
+            if($etat->getId() != 0 && $etat->getId() != 1 && $etat->getId() != 2 && $etat->getId() != 3){
                 $this->addFlash('error', 'Vous ne pouvez plus vous désinscrire !');
                 return $this->redirectToRoute('sortie_index');
             }

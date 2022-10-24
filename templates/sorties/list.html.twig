@@ -48,16 +48,35 @@
                     <td>{{ sortie.dateLimiteInscription | date('d-m-Y') }}</td>
                     <td>{{ sortie.participants | length }}/{{ sortie.nbInscriptionMax }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
-                    <td>{% if sortie.participants | length != 0 and app.user %}
-                            {% for participant in sortie.participants %}
-                                {% if participant.id == app.user.id %}
-                                    <a href="{{ path('sortie_removeRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"><span>✔</span></a>
-                                {% else %}
-                                    <a href="{{ path('sortie_addRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"> s'inscrire</a>
-                                {% endif %}
-                            {% endfor %}
+                    <td>
+                        {% if(sortie.etat.id != 3 and sortie.etat.id != 4 and sortie.etat.id != 5 and sortie.etat.id != 6) %}
+                            {% if sortie.participants | length != 0 %}
+                                {% for participant in sortie.participants %}
+                                    {% if participant.id == app.user.id %}
+                                        <a href="{{ path('sortie_removeRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"><span>✔</span></a>
+                                    {% else %}
+                                        <a href="{{ path('sortie_addRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"> s'inscrire</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <a href="{{ path('sortie_addRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"> s'inscrire</a>
+                            {% endif %}
                         {% else %}
-                            <a href="{{ path('sortie_addRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"> s'inscrire</a>
+                            {% if(sortie.etat.id == 3) %}
+                                {% if sortie.participants | length != 0 %}
+                                    {% for participant in sortie.participants %}
+                                        {% if participant.id == app.user.id %}
+                                            <a href="{{ path('sortie_removeRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"><span>✔</span></a>
+                                        {% else %}
+                                            <a>inscription cloturé</a>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                {% endif %}
+                                <a href="{{ path('sortie_removeRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"><span>✔</span></a>
+                            {% else %}
+                                <a>inscription cloturé</a>
+                            {% endif %}
                         {% endif %}
                     </td>
                     <td><a href="{{ path('profil_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</a></td>
