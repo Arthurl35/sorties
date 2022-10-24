@@ -31,6 +31,8 @@ class SiteController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $siteRepository->save($site, true);
 
+            // Feedback user
+            $this->addFlash('succes', 'Site ajouté !');
             return $this->redirectToRoute('app_site_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -71,6 +73,7 @@ class SiteController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete'.$site->getId(), $request->request->get('_token'))) {
             $siteRepository->remove($site, true);
+            $this->addFlash('succes', 'Site supprimé !');
         }
 
         return $this->redirectToRoute('app_site_index', [], Response::HTTP_SEE_OTHER);
