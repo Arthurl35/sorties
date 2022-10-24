@@ -52,11 +52,11 @@ class AppFixtures extends Fixture
     }
     public function addUsers(){
         $sites = ['Nantes','Rennes','Quimper','Niort'];
-        for($i = 0; $i < 10; $i++){
+        for($i = 0; $i < 1; $i++){
             $Participant = new Participant();
             $site = new Site();
             $site->setNom($this->generator->randomElement($sites));
-            $Participant->setRoles(['ROLE_USER'])
+            $Participant->setRoles(['ROLE_ADMIN'])
                 ->setBackdrop($this->generator->word . ".png")
                 ->setEmail($this->generator->email)
                 ->setPrenom($this->generator->firstName)

@@ -5,9 +5,12 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
+use App\Utils\Upload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/admin')]
@@ -22,13 +25,42 @@ class ParticipantController extends AbstractController
     }
 
     #[Route('/new', name: 'app_participant_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ParticipantRepository $participantRepository): Response
+    public function new(Request $request,
+                        ParticipantRepository $participantRepository,
+                        Upload $upload,
+                        UserPasswordHasherInterface $userPasswordHasher,
+
+                        $id = null): Response
     {
         $participant = new Participant();
         $form = $this->createForm(ParticipantType::class, $participant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+                //gestion du mot de passe
+                $participant->setPassword($userPasswordHasher->hashPassword($participant, $form->get('password')->getData()));
+
+                //gestion du status administrateur du participant
+                $isAdmin = $form->get('administrateur')->getData();
+                if($isAdmin){
+                    $participant->setRoles(['ROLE_ADMIN']);
+                }else{
+                    $participant->setRoles(['ROLE_USER']);
+                }
+
+
+                //gestion de l'upload de l'image
+                $backdrop = $form->get('backdrop')->getData();
+                $participant->setBackdrop($upload->saveFile($backdrop, $participant->getNom(), $this->getParameter('sorties_backdrop_dir')));
+
+
+                //enregistrement des données
+                $participantRepository->add($participant, true);
+
+                //feedback user
+                $this->addFlash('success', 'Participant' . $id . ' a été ajouté !');
+
             $participantRepository->save($participant, true);
 
             return $this->redirectToRoute('app_participant_index', [], Response::HTTP_SEE_OTHER);
