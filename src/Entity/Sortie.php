@@ -295,4 +295,15 @@ class Sortie
 
         return $this;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function __toString()
+    {
+        // TODO: Implement __toString() method.
+            return $this->lieu . $this->nom .$this->dateHeureDebut->format('Y-m-d') . $this->duree . $this->dateLimiteInscription->format('Y-m-d') . $this->nbInscriptionMax . $this->infosSortie;
+    }
+
+
 }
