@@ -33,51 +33,37 @@
             </li>
 
             <li>
-                <a href="#">
+                <a href="{{ path('sortie_index') }}">
+                    <i class="fa fa-table fa-2x"></i>
+                    <span class="nav-text">
+                        Consulter les sorties
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ path('sortie_add') }}">
                     <i class="fa fa-table fa-2x"></i>
                     <span class="nav-text">
                                 Créer une sortie
                             </span>
                 </a>
             </li>
-            <li>
-                <a href="#">
-                    <i class="fa fa-font fa-2x"></i>
-                    <span class="nav-text">
-                               Afficher sortie
-                            </span>
-                </a>
-            </li>
 
             <li>
-                <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                <a href="{{ path('app_site_index', {'id':app.user.id}) }}">
                     <i class="fa fa-user fa-2x"></i>
                     <span class="nav-text">
-                                Modifier une sortie
+                                Gérer les sites
                             </span>
                 </a>
             </li>
             <li>
-                <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
-                    <i class="fa fa-user fa-2x"></i>
-                    <span class="nav-text">
-                                Annuler
-                            </span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
-                    <i class="fa fa-user fa-2x"></i>
-                    <span class="nav-text">
-                                Gerer les villes
-                            </span>
-                </a>
-            </li>
-            <li>
+
                 <a href="{{ path('app_site_index') }}">
                     <i class="fa fa-user fa-2x"></i>
                     <span class="nav-text">
-                                Gerer les sites
+                                Gérer les lieux
                             </span>
                 </a>
             </li>

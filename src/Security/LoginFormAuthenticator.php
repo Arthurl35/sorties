@@ -60,8 +60,19 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        // For example:
-        return new RedirectResponse($this->urlGenerator->generate('sortie_index'));
+        $email = $request->request->get('email', '');
+
+        $participant = $this->participantRepo->findOneBy(['email' => $email]);
+
+        if($participant->isActif()){
+            return new RedirectResponse($this->urlGenerator->generate('sortie_index'));
+        }else{
+            //feedback user
+            #this->addFlash('error', 'Votre compte est désactivé veuillez contacter l\'administrateur');
+            $request->getSession()->getFlashBag()->add('message', 'Votre compte est désactivé veuillez contacter l\'administrateur');
+
+        }
+        return new RedirectResponse($this->urlGenerator->generate('app_logout'));
     }
 
     protected function getLoginUrl(Request $request): string
