@@ -8,16 +8,24 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Nom</th>
+                <th>Rue</th>
                 <th>Ville</th>
-                <th>Cp</th>
+                <th>Code postal</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for lieu in lieus %}
             <tr>
+                <td>{{ lieu.nom }}</td>
+                <td>{{ lieu.rue }}</td>
                 <td>{{ lieu.ville }}</td>
                 <td>{{ lieu.cp }}</td>
+                <td>{{ lieu.latitude }}</td>
+                <td>{{ lieu.longitude }}</td>
                 <td>
                     <a href="{{ path('app_lieu_show', {'id': lieu.id}) }}">show</a>
                     <a href="{{ path('app_lieu_edit', {'id': lieu.id}) }}">edit</a>
