@@ -145,8 +145,6 @@ class SortiesController extends AbstractController
             $sortie->setSite($user->getSite());
             $sortie->setOrganisateur($user);
 
-    var_dump($sortie->getDateHeureDebut());
-            var_dump($sortieForm->get('dateHeureDebut')->getData());
             //1 Créée
             //2 Ouverte
             //3 Clôturée
