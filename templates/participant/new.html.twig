@@ -3,9 +3,9 @@
 {% block title %}New Participant{% endblock %}
 
 {% block body %}
-    <h1>Create new Participant</h1>
+    <h1>Créer un nouveau participant</h1>
 
     {{ include('participant/_form.html.twig') }}
 
-    <a href="{{ path('app_participant_index') }}">back to list</a>
+    <a href="{{ path('app_participant_index') }}"><button class="btn btn-lg btn-secondary">Retour à la liste</button></a>
 {% endblock %}

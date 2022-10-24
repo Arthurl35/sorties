@@ -64,7 +64,6 @@ class ProfilType extends AbstractType
 
             ])
             ->add('site', EntityType::class, [
-                'label' => 'site :',
                 'class' => Site::class,
                 'choice_label' => 'nom',
                 'label' => 'Site :',
@@ -73,7 +72,6 @@ class ProfilType extends AbstractType
                 }
             ])
             ->add('backdrop', FileType::class, [
-                'label' => 'photo de profil :',
                 'mapped' => false,
                 'required' => false,
                 'label' => 'Photo de profil :',

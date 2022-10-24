@@ -7,19 +7,34 @@
 
     <table class="table">
         <tbody>
-                <th>Ville</th>
+                <th>Nom :</th>
+                <td>{{ lieu.nom }}</td>
+            </tr>
+            <tr>
+                <th>Rue :</th>
+                <td>{{ lieu.rue }}</td>
+            </tr>
+            <tr>
+                <th>Latitude :</th>
+                <td>{{ lieu.latitude }}</td>
+            </tr>
+            <tr>
+                <th>Longitude :</th>
+                <td>{{ lieu.longitude }}</td>
+            </tr>
+            <tr>
+                <th>Ville :</th>
                 <td>{{ lieu.ville }}</td>
             </tr>
             <tr>
-                <th>Cp</th>
+                <th>Code postale :</th>
                 <td>{{ lieu.cp }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_lieu_index') }}">back to list</a>
-
-    <a href="{{ path('app_lieu_edit', {'id': lieu.id}) }}">edit</a>
+    <a href="{{ path('app_lieu_edit', {'id': lieu.id}) }}"><button class="btn btn-lg btn-primary">Modifier</button></a>
+    <a href="{{ path('app_lieu_index') }}"><button class="btn btn-lg btn-secondary">Retour</button></a>
 
     {{ include('lieu/_delete_form.html.twig') }}
 {% endblock %}
