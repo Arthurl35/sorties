@@ -87,10 +87,12 @@ class SortiesController extends AbstractController
     #[Route('/edit/{id}', name: 'edit', requirements: ['id' => '\d+'])]
     public function addOrEdit(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository, int $id = null): Response
     {
-        var_dump($request->getSession()->get('participant'));
+        //récupère le user
+        //$user = $participantRepository->findBy(['email' => $request->getSession()->get('_security.last_username')]);
 
-        //simule un user co
-        $user = $participantRepository->find(11);
+        $user = $participantRepository->find(21);
+
+        //var_dump($user);
 
         //récupère les états existants
         $etatCree = $etatRepository->find(1);
@@ -143,8 +145,6 @@ class SortiesController extends AbstractController
             $sortie->setSite($user->getSite());
             $sortie->setOrganisateur($user);
 
-    var_dump($sortie->getDateHeureDebut());
-            var_dump($sortieForm->get('dateHeureDebut')->getData());
             //1 Créée
             //2 Ouverte
             //3 Clôturée

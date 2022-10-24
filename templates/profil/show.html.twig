@@ -14,7 +14,10 @@
             <div>Téléphone : {{ participant.telephone }}</div>
             <div>Email : {{ participant.email}}</div>
             <div>Site de rattachement : {{ participant.site.nom}}</div>
+            <button class="btn btn-lg btn-primary" onclick="{{ path('sortie_index') }}">Retour</button>
+
             <img src="{{ asset('img/backdrops/' ~ participant.backdrop)}}" alt="">
+
 
 {% endblock %}
 
