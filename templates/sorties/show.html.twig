@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Détails Sorties
+{% endblock %}
+
+{% block body %}
+
+    <h2 class="body-title">Détails Sorties</h2>
+
+    <ul>
+        <li>Organisateur : {{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</li>
+        <li>Nom : {{ sortie.nom }}</li>
+        <li>Date : {{ sortie.dateHeureDebut | date('d-m-Y') }}</li>
+        <li>Cloture : {{ sortie.dateLimiteInscription | date('d-m-Y') }}</li>
+        <li>Nombres d'inscrits : {{ sortie.participants | length }}/{{ sortie.nbInscriptionMax }}</li>
+        <li>Etat : {{ sortie.etat.libelle }}</li>
+    </ul>
+
+    {% if app.user.id == sortie.organisateur.id %}
+        {% if sortie.etat.id == 1 or sortie.etat.id == 2 %}
+            <a href="{{ path('sortie_edit', {'id':sortie.id}) }}">Modifier</a>
+        {% endif %}
+        {% if sortie.etat.id != 6 and sortie.etat.id != 4 and sortie.etat.id != 5 %}
+            <a href="{{ path('sortie_cancel', {'id':sortie.id}) }}">Annuler</a>
+        {% endif %}
+        {% if sortie.etat.id != 4 %}
+            <a href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
+        {% endif %}
+    {% endif %}
+
+
+    <!-- test pour affiche inscription il faut ajout test si l'état autorise-->
+    {% if inscrit %}
+        <a href="{{ path('sortie_removeRegister', {'idUser':app.user.id, 'idSortie':sortie.id}) }}">Se désinscrire</a>
+    {% else %}
+        <a href="{{ path('sortie_addRegister', {'idUser':app.user.id, 'idSortie':sortie.id}) }}">S'inscrire</a>
+    {% endif %}
+
+
+
+
+
+    <h3>Participants</h3>
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Roles</th>
+                </tr>
+            </thead>
+
+            {% for participant in sortie.participants %}
+                <tr>
+                    <td>{{ participant.id }}</td>
+                    <td>{{ participant.email }}</td>
+                    <td>{{ participant.nom }}</td>
+                    <td>{{ participant.prenom }}</td>
+                    <td>{{ participant.roles ? participant.roles|json_encode : '' }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

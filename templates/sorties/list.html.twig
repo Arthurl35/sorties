@@ -26,38 +26,42 @@
             <label for="expirer">Sorties passées</label>
         </div>
     </fieldset>
+
     <div>
-        <table>
-            <tr>
-                <th>Nom de la sortie</th>
-                <th>Date de la sortie</th>
-                <th>Cloture</th>
-                <th>Inscrits/places</th>
-                <th>Etat</th>
-                <th>Inscrit</th>
-                <th>Organisateur</th>
-            </tr>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom de la sortie</th>
+                    <th>Date de la sortie</th>
+                    <th>Cloture</th>
+                    <th>Inscrits/places</th>
+                    <th>Etat</th>
+                    <th>Inscrit</th>
+                    <th>Organisateur</th>
+                </tr>
+            </thead>
 
             {% for sortie in sorties %}
                 <tr>
-
                     <td>{{ sortie.nom }}</td>
                     <td>{{ sortie.dateHeureDebut | date('d-m-Y') }}</td>
                     <td>{{ sortie.dateLimiteInscription | date('d-m-Y') }}</td>
                     <td>{{ sortie.participants | length }}/{{ sortie.nbInscriptionMax }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
-                    <td>{% if sortie.participants | length != 0 %}
-
+                    <td>{% if sortie.participants | length != 0 and app.user %}
                             {% for participant in sortie.participants %}
-
                                 {% if participant.id == app.user.id %}
-                                    <span> ✔</span>
+                                    <a href="{{ path('sortie_removeRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"><span>✔</span></a>
+                                {% else %}
+                                    <a href="{{ path('sortie_addRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"> s'inscrire</a>
                                 {% endif %}
                             {% endfor %}
+                        {% else %}
+                            <a href="{{ path('sortie_addRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"> s'inscrire</a>
                         {% endif %}
-
                     </td>
                     <td><a href="{{ path('profil_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</a></td>
+                    <td><a href="{{ path('sortie_show', {'id': sortie.id}) }}">view</a></td>
                 </tr>
             {% endfor %}
         </table>
