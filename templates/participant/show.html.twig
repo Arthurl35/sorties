@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Participant{% endblock %}
+{% block title %}{{ parent() }} | Détail du participant{% endblock %}
 
 {% block body %}
     <h1>Participant</h1>
@@ -8,51 +8,56 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
+                <th>Id :</th>
                 <td>{{ participant.id }}</td>
             </tr>
             <tr>
-                <th>Email</th>
+                <th>Email :</th>
                 <td>{{ participant.email }}</td>
             </tr>
             <tr>
-                <th>Roles</th>
-                <td>{{ participant.roles ? participant.roles|json_encode : '' }}</td>
+                <th>Role :</th>
+                <td>{% if participant.roles ? participant.roles|json_encode : '' == "[\"ROLE_USER\"]"%}
+                        Utilisateur
+                    {% else %}
+                        Administrateur
+                    {% endif %}</td>
             </tr>
             <tr>
-                <th>Password</th>
-                <td>{{ participant.password }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
+                <th>Nom :</th>
                 <td>{{ participant.nom }}</td>
             </tr>
             <tr>
-                <th>Prenom</th>
+                <th>Prénom :</th>
                 <td>{{ participant.prenom }}</td>
             </tr>
             <tr>
-                <th>Telephone</th>
+                <th>N° de téléphone :</th>
                 <td>{{ participant.telephone }}</td>
             </tr>
             <tr>
-                <th>Administrateur</th>
-                <td>{{ participant.administrateur ? 'Yes' : 'No' }}</td>
+                <th>Administrateur :</th>
+                <td>{{ participant.administrateur ? 'Oui' : 'Non' }}</td>
             </tr>
             <tr>
-                <th>Actif</th>
-                <td>{{ participant.actif ? 'Yes' : 'No' }}</td>
+                <th>Actif :</th>
+                <td>{{ participant.actif ? 'Oui' : 'Non' }}</td>
             </tr>
             <tr>
-                <th>Backdrop</th>
-                <td>{{ participant.backdrop }}</td>
+                <th>Photo de profil :</th>
+                <td>{% if participant.backdrop %}
+                        <img src="{{ asset('img/backdrops/' ~ participant.backdrop)}}" alt="">
+                    {% else %}
+                        Aucune
+                    {% endif %}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_participant_index') }}">back to list</a>
+    <a href="{{ path('app_participant_edit', {'id': participant.id}) }}"><button class="btn btn-lg btn-primary">Modifier</button></a>
 
-    <a href="{{ path('app_participant_edit', {'id': participant.id}) }}">edit</a>
+    <a href="{{ path('app_participant_index') }}"><button class="btn btn-lg btn-secondary">Retour</button></a>
+
 
     {{ include('participant/_delete_form.html.twig') }}
 {% endblock %}
