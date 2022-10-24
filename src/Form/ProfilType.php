@@ -8,9 +8,12 @@ use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,13 +26,26 @@ class ProfilType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('prenom', TextType::class, ['label' => 'Prénom :'])
-            ->add('nom', TextType::class, ['label' => 'Nom :'])
-            ->add('telephone', TextType::class, ['label' => 'N° de téléphone :'])
-            ->add('email', TextType::class, ['label' => 'Adresse e-mail :'])
+            ->add('prenom', TextType::class, [
+            'label' => 'Prénom :',
+            'attr' => ['class' => '']
+            ])
+            ->add('nom', TextType::class, [
+            'label' => 'Nom :',
+            'attr' => ['class' => '']
+            ])
+            ->add('telephone', TextType::class, [
+            'label' => 'N° de téléphone :',
+            'attr' => ['class' => '']
+            ])
+            ->add('email', TextType::class, [
+            'label' => 'Adresse e-mail :',
+            'attr' => ['class' => '']
+            ])
             ->add('password', RepeatedType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
+                'required' => false,
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
                 'first_options'  => ['label' => 'Mot de passe :'],
@@ -37,9 +53,6 @@ class ProfilType extends AbstractType
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
@@ -51,6 +64,7 @@ class ProfilType extends AbstractType
 
             ])
             ->add('site', EntityType::class, [
+                'label' => 'site :',
                 'class' => Site::class,
                 'choice_label' => 'nom',
                 'label' => 'Site :',
@@ -59,6 +73,7 @@ class ProfilType extends AbstractType
                 }
             ])
             ->add('backdrop', FileType::class, [
+                'label' => 'photo de profil :',
                 'mapped' => false,
                 'required' => false,
                 'label' => 'Photo de profil :',
@@ -68,8 +83,9 @@ class ProfilType extends AbstractType
                         'maxSizeMessage' => 'The file is too big !'
                     ])
                 ]
-            ]);
-
+            ])
+            ->add('modifier', SubmitType::class)
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

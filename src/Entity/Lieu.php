@@ -147,4 +147,10 @@ class Lieu
 
         return $this;
     }
+
+    public function __toString()
+    {
+        // TODO: Implement __toString() method.
+        return $this->nom . $this->rue .$this->latitude . $this->longitude . $this->ville . $this->cp;
+    }
 }
