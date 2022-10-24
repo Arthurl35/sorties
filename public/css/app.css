@@ -164,4 +164,7 @@ nav ul,nav li {
     background-color: red
 }
 
-
+.table tr td img {
+    max-width: 10%;
+    min-width: 140px;
+}
