@@ -36,6 +36,8 @@ class SortiesController extends AbstractController
         $this->majEtatSorties($sortieRepository, $etatRepository);
         $sorties = $sortieRepository->findAll();
 
+
+
         //Filtres
 //        $filterForm = $this->createForm(SortieType::class, $sorties, ['data' => $sorties]);
 //        $filterForm->handleRequest($request);
@@ -47,7 +49,6 @@ class SortiesController extends AbstractController
 //        }
         return $this->render('sorties/list.html.twig', [
             'sorties' => $sorties,
-//            'filterForm' => $filterForm,
         ]);
     }
 
@@ -82,8 +83,9 @@ class SortiesController extends AbstractController
 
         if ($id) {
             $sortie = $sortieRepository->find($id);
+            if($sortie->getOrganisateur()->getId() != $user->getId()) return $this->redirectToRoute('sortie_index');
             //test si le créateur est l'actuel demandeur de modification
-            if(!$sortie->getOrganisateur() === $user) return $this->redirectToRoute('sortie_index');
+            if(!$sortie->getOrganisateur()->getId() == $user->getId()) return $this->redirectToRoute('sortie_index');
             //si l'état est différent de 1 ou 2
             if (!in_array($sortie->getEtat()->getId(), $etatAutorise)) return $this->redirectToRoute('sortie_index');
             $libelleSubmit = "modifier";
@@ -99,7 +101,12 @@ class SortiesController extends AbstractController
         //selon création ou édition et l'état si édition on supprime des éléments du form
         if ($id) {
             $sortieForm->remove("enregistrer");
-            if($sortie->getEtat()->getId() != 1) $sortieForm->remove("publier");
+            if($sortie->getEtat()->getId() != 1) {
+                $sortieForm->remove("publier");
+                $publier = false;
+            }
+            else $publier = true;
+
         } else {
             $sortieForm->remove("publier");
             $sortieForm->remove("modifier");
@@ -132,7 +139,9 @@ class SortiesController extends AbstractController
             //6 Annulée
             //Gestion Création Publication Modification
             if($libelleSubmit == "modifier"){
-                if($sortieForm->get("publier")->isClicked()) $libelleSubmit = "publier";
+                if($publier){
+                    if($sortieForm->get("publier")->isClicked()) $libelleSubmit = "publier";
+                }
             }
 
             if ($sortieForm->get($libelleSubmit)->isClicked()) {
@@ -238,7 +247,7 @@ class SortiesController extends AbstractController
         $sortie = $sortieRepository->find($idSortie);
         if($sortie){
             $etat = $sortie->getEtat();
-            if($etat->getId() != 0 && $etat->getId() != 1 && $etat->getId() != 2){
+            if($etat->getId() != 2){
                 $this->addFlash('error', 'La sortie n\'accepte plus d\'inscription');
                 return $this->redirectToRoute('sortie_index');
             }
@@ -271,7 +280,7 @@ class SortiesController extends AbstractController
         $sortie = $sortieRepository->find($idSortie);
         if($sortie){
             $etat = $sortie->getEtat();
-            if($etat->getId() != 0 && $etat->getId() != 1 && $etat->getId() != 2 && $etat->getId() != 3){
+            if($etat->getId() != 2 && $etat->getId() != 3){
                 $this->addFlash('error', 'Vous ne pouvez plus vous désinscrire !');
                 return $this->redirectToRoute('sortie_index');
             }
@@ -311,7 +320,7 @@ class SortiesController extends AbstractController
 
                 return $this->redirectToRoute('sortie_index');
             }
-            if($sortie->getOrganisateur() === $user){
+            if($sortie->getOrganisateur()->getId() == $user->getId()){
                 $sortieRepository->remove($sortie, true);
                 $this->addFlash('success', 'sortie Supprimée !');
             }
@@ -337,7 +346,7 @@ class SortiesController extends AbstractController
 
                 return $this->redirectToRoute('sortie_index');
             }
-            if($sortie->getOrganisateur() === $user){
+            if($sortie->getOrganisateur()->getId() == $user->getId()){
                 $sortie->setEtat($etatRepository->find(6));
                 //update des données
                 $sortieRepository->save($sortie, true);
@@ -365,7 +374,7 @@ class SortiesController extends AbstractController
 
                 return $this->redirectToRoute('sortie_index');
             }
-            if($sortie->getOrganisateur() === $user){
+            if($sortie->getOrganisateur()->getId() == $user->getId()){
                 $sortie->setEtat($etatRepository->find(2));
                 //update des données
                 $sortieRepository->save($sortie, true);

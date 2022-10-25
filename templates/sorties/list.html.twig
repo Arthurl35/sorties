@@ -51,7 +51,7 @@
                     <td><a href="{{ path('profil_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</a></td>
                     <td>
 
-                        {% if(sortie.etat.id == 1 or sortie.etat.id == 2) %}
+                        {% if(sortie.etat.id == 2) %}
                             {% if sortie.participants | length != 0 %}
                                 {% set inscrit = false %}
                                 {% for participant in sortie.participants %}
@@ -67,7 +67,7 @@
                             {% else %}
                                 <a href="{{ path('sortie_addRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"> s'inscrire</a>
                             {% endif %}
-                        {% elseif(sortie.etat.id != 1 or sortie.etat.id != 2) %}
+                        {% elseif(sortie.etat.id != 1 and sortie.etat.id != 2) %}
                             {% if sortie.participants | length != 0 %}
                                 {% set inscrit = false %}
                                 {% for participant in sortie.participants %}
@@ -78,17 +78,24 @@
                                 {% if(inscrit) %}
                                     <span>✔</span>
                                 {% else %}
-                                    <span>Inscrit</span>
+                                    <span>Non Inscrit</span>
                                 {% endif %}
                             {% else %}
-                                <span>Inscrit</span>
+                                <span>Non Inscrit</span>
                             {% endif %}
+                        {% elseif (sortie.etat.id == 1) %}
+                            <span>Inscription futur</span>
                         {% endif %}
                     </td>
                     <td>{{ sortie.etat.libelle }}</td>
                     <td><a href="{{ path('sortie_show', {'id': sortie.id}) }}">view</a></td>
                     {% if(sortie.organisateur.id == app.user.id) %}
-                        <td><a href="{{ path('sortie_edit', {'id': sortie.id}) }}">edit</a></td>
+                        {% if(sortie.etat.id == 1 or sortie.etat.id == 2 or sortie.etat.id == 3) %}
+                            <td><a href="{{ path('sortie_edit', {'id': sortie.id}) }}">edit</a></td>
+                        {% endif %}
+                        {% if(sortie.etat.id == 1) %}
+                            <td><a href="{{ path('sortie_publish', {'id': sortie.id}) }}">publish</a></td>
+                        {% endif %}
                     {% endif %}
                 </tr>
             {% endfor %}
