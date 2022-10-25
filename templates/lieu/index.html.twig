@@ -1,9 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Lieu index{% endblock %}
+{% block title %}{{ parent() }} | Liste des lieux {% endblock %}
 
 {% block body %}
-    <h1>Lieu index</h1>
+    <h1>Liste des lieux :</h1>
+
+    <a href="{{ path('app_lieu_new') }}"><button class="btn btn-success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-plus-fill" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zm6.5-11a.5.5 0 0 0-1 0V6H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V7H10a.5.5 0 0 0 0-1H8.5V4.5z"/>
+        </svg>
+        Nouveau lieu</button></a>
+
 
     <table class="table">
         <thead>
@@ -14,7 +21,7 @@
                 <th>Code postal</th>
                 <th>Latitude</th>
                 <th>Longitude</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -27,8 +34,15 @@
                 <td>{{ lieu.latitude }}</td>
                 <td>{{ lieu.longitude }}</td>
                 <td>
-                    <a href="{{ path('app_lieu_show', {'id': lieu.id}) }}">show</a>
-                    <a href="{{ path('app_lieu_edit', {'id': lieu.id}) }}">edit</a>
+                    <a href="{{ path('app_lieu_show', {'id': lieu.id}) }}"><button class="btn btn-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-lg" viewBox="0 0 16 16">
+                                <path d="m9.708 6.075-3.024.379-.108.502.595.108c.387.093.464.232.38.619l-.975 4.577c-.255 1.183.14 1.74 1.067 1.74.72 0 1.554-.332 1.933-.789l.116-.549c-.263.232-.65.325-.905.325-.363 0-.494-.255-.402-.704l1.323-6.208Zm.091-2.755a1.32 1.32 0 1 1-2.64 0 1.32 1.32 0 0 1 2.64 0Z"/>
+                            </svg></button></a>
+
+                    <a href="{{ path('app_lieu_edit', {'id': lieu.id}) }}"><button class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                            </svg></button></a>
                 </td>
             </tr>
         {% else %}
@@ -39,5 +53,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_lieu_new') }}">Create new</a>
+
 {% endblock %}

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ParticipantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,10 +15,14 @@ class MainController extends AbstractController
         /**
          * @Route("/main", name="main_home_2")
          */
-    public function home(): Response
+    public function home(ParticipantRepository $participantRepository): Response
     {
-
-        return $this->render('main/home.html.twig');
+        $user = $participantRepository->find(21);
+        //foreach ($user->getSortiesInscrits() as $sortie){
+        //    echo $sortie;
+        //}
+        //return $this->render('main/home.html.twig');
+        return $this->redirectToRoute('sortie_index');
     }
 
 

@@ -62,8 +62,7 @@ class SortiesController extends AbstractController
 
 
     #[Route('', name: 'index')]
-
-    public function index(Request $request,SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
+    public function index(SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
 
     {
         $this->onLoad($sortieRepository, $etatRepository);
@@ -103,6 +102,18 @@ class SortiesController extends AbstractController
         ]);
     }
 
+    #[Route('/show/{id}', name: 'show', requirements: ['id' => '\d+'])]
+    public function show(SortieRepository $sortieRepository, ParticipantRepository $participantRepository, $id): Response
+    {
+        $user = $participantRepository->find(21);
+        $sortie = $sortieRepository->find($id);
+
+        return $this->render('sorties/show.html.twig', [
+            'sortie' => $sortie,
+            'inscrit' => $this->isInscrit($user, $sortie)
+        ]);
+    }
+
     #[Route('/add', name: 'add')]
     #[Route('/edit/{id}', name: 'edit', requirements: ['id' => '\d+'])]
     public function addOrEdit(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository, int $id = null): Response
@@ -127,9 +138,12 @@ class SortiesController extends AbstractController
         //libelle du btn submit à écouter
         $libelleSubmit = "enregistrer";
 
+
         if ($id) {
             $sortie = $sortieRepository->find($id);
-            //si l'état est différent de 1
+            //test si le créateur est l'actuel demandeur de modification
+            if(!$sortie->getOrganisateur() === $user) return $this->redirectToRoute('sortie_index');
+            //si l'état est différent de 1 ou 2
             if (!in_array($sortie->getEtat()->getId(), $etatAutorise)) return $this->redirectToRoute('sortie_index');
             $libelleSubmit = "modifier";
         } else {
@@ -234,6 +248,8 @@ class SortiesController extends AbstractController
                             ]);
                         }
                     }
+                    //on inscrit l'organisateur à la sortie
+                    $sortie->getParticipants()->add($user);
 
                     //update des données
                     $sortieRepository->save($sortie, true);
@@ -243,15 +259,11 @@ class SortiesController extends AbstractController
                     return $this->redirectToRoute('sortie_edit', ['id' => $sortie->getId()]);
                 }
             }elseif ($sortieForm->get('annuler')->isClicked()){
-                $sortie->setEtat($etatAnnule);
-                //update des données
-                $sortieRepository->save($sortie, true);
-                $this->addFlash('success', 'sortie Annulée !');
+                return $this->redirectToRoute('sortie_cancel', ['id' => $sortie->getId()]);
             }
             elseif(($sortieForm->get('supprimer')->isClicked())){
                 //delete des données
-                $sortieRepository->remove($sortie, true);
-                $this->addFlash('success', 'sortie Supprimer !');
+                return $this->redirectToRoute('sortie_delete', ['id' => $sortie->getId()]);
             }
             //redirection vers la page de détail
             return $this->redirectToRoute('sortie_index');
@@ -266,6 +278,131 @@ class SortiesController extends AbstractController
                 'sortieForm' => $sortieForm->createView()
             ]);
         }
+    }
+
+    #[Route('/addRegister/{idUser}&{idSortie}', name: 'addRegister', requirements: ['idUser' => '\d+', 'idSortie' => '\d+'])]
+    public function addRegister(SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $idUser, int $idSortie): Response
+    {
+        //test si sortie existe et encort ouvert aux inscriptions
+        $sortie = $sortieRepository->find($idSortie);
+        if($sortie){
+            $etat = $sortie->getEtat();
+            if($etat->getId() != 0 && $etat->getId() != 1){
+                $this->addFlash('error', 'La sortie n\'accepte plus d\'inscription');
+                return $this->redirectToRoute('sortie_index');
+            }
+        }
+        else $this->addFlash('error', 'la sortie n\'existe pas !');
+
+        //test si utilisateur correspond et n'est pas déjà inscrit
+        $user = $participantRepository->find(21);
+        if($user->getId() == $idUser){
+            if(!$this->isInscrit($user, $sortie)){
+                //on inscrit
+                $sortie->getParticipants()->add($user);
+                //update des données
+                $sortieRepository->save($sortie, true);
+
+                $this->addFlash('success', 'Inscription réussi !');
+            }
+            else $this->addFlash('error', 'vous êtes déjà inscrit !');
+        }
+        else $this->addFlash('error', 'tentative non autorisée !');
+
+        return $this->redirectToRoute('sortie_index');
+    }
+
+    #[Route('/removeRegister/{idUser}&{idSortie}', name: 'removeRegister', requirements: ['idUser' => '\d+', 'idSortie' => '\d+'])]
+    public function removeRegister(SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $idUser, int $idSortie): Response
+    {
+        //test si sortie existe et encort ouvert aux inscriptions
+        $sortie = $sortieRepository->find($idSortie);
+        if($sortie){
+            $etat = $sortie->getEtat();
+            if($etat->getId() != 0 && $etat->getId() != 1){
+                $this->addFlash('error', 'Vous ne pouvez plus vous désinscrire !');
+                return $this->redirectToRoute('sortie_index');
+            }
+        }
+        else $this->addFlash('error', 'la sortie n\'existe pas !');
+
+        //test si utilisateur correspond et n'est pas déjà inscrit
+        $user = $participantRepository->find(21);
+        if($user->getId() == $idUser){
+            if($this->isInscrit($user, $sortie)){
+                //on désinscrit
+                $sortie->getParticipants()->remove($sortie->getParticipants()->indexOf($user));
+                //update des données
+                $sortieRepository->save($sortie, true);
+
+                $this->addFlash('success', 'Désinscription réussi !');
+            }
+            else $this->addFlash('error', 'vous êtes n\'êtes pas inscrit !');
+        }
+        else $this->addFlash('error', 'tentative non autorisée !');
+
+        return $this->redirectToRoute('sortie_index');
+    }
+
+    #[Route('/delete/{id}', name: 'delete', requirements: ['id' => '\d+'])]
+    public function delete(SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $id): Response
+    {
+        $etatAutorise = [1,2,3,5,6];
+
+        $user = $participantRepository->find(21);
+        $sortie = $sortieRepository->find($id);
+
+        if($sortie){
+            if(!in_array($sortie->getEtat()->getId(), $etatAutorise)) {
+                $this->addFlash('error', 'Action impossible sur une sortie '+$sortie->getEtat()->getLibelle());
+
+                return $this->redirectToRoute('sortie_index');
+            }
+            if($sortie->getOrganisateur() === $user){
+                $sortieRepository->remove($sortie, true);
+                $this->addFlash('success', 'sortie Supprimée !');
+            }
+            else $this->addFlash('error', 'tentative non autorisée !');
+        }
+        else $this->addFlash('error', 'La sortie n\'existe pas');
+
+        return $this->redirectToRoute('sortie_index');
+    }
+
+    #[Route('/cancel/{id}', name: 'cancel', requirements: ['id' => '\d+'])]
+    public function cancel(SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, int $id): Response
+    {
+        $etatAutorise = [1,2,3];
+
+        $user = $participantRepository->find(21);
+        $sortie = $sortieRepository->find($id);
+
+        if(!in_array($sortie->getEtat()->getId(), $etatAutorise)) {
+            $this->addFlash('error', 'Action impossible sur une sortie '+$sortie->getEtat()->getLibelle());
+
+            return $this->redirectToRoute('sortie_index');
+        }
+
+        if($sortie){
+            if($sortie->getOrganisateur() === $user){
+                $sortie->setEtat($etatRepository->find(6));
+                //update des données
+                $sortieRepository->save($sortie, true);
+                $this->addFlash('success', 'sortie Annulée !');
+            }
+            else $this->addFlash('error', 'tentative non autorisée !');
+        }
+        else $this->addFlash('error', 'La sortie n\'existe pas');
+
+        return $this->redirectToRoute('sortie_index');
+    }
+
+    //test si user est inscrit ou non
+    private function isInscrit($user, $sortie): bool{
+        foreach($sortie->getParticipants() as $participant){
+            if($participant->getId() == $user->getId()) return true;
+        }
+        return false;
     }
 
 }
