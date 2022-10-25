@@ -33,6 +33,7 @@ class SortiesController extends AbstractController
     public function index(SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
 
     {
+        $this->majEtatSorties($sortieRepository, $etatRepository);
         $sorties = $sortieRepository->findAll();
 
         //Filtres
@@ -51,8 +52,9 @@ class SortiesController extends AbstractController
     }
 
     #[Route('/show/{id}', name: 'show', requirements: ['id' => '\d+'])]
-    public function show(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, $id): Response
+    public function show(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, $id): Response
     {
+        $this->majEtatSorties($sortieRepository, $etatRepository);
         $user = $this->getUserSession($request, $participantRepository);
         $sortie = $sortieRepository->find($id);
 
@@ -220,8 +222,10 @@ class SortiesController extends AbstractController
     }
 
     #[Route('/addRegister/{idUser}&{idSortie}', name: 'addRegister', requirements: ['idUser' => '\d+', 'idSortie' => '\d+'])]
-    public function addRegister(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $idUser, int $idSortie): Response
+    public function addRegister(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, int $idUser, int $idSortie): Response
     {
+        $this->majEtatSorties($sortieRepository, $etatRepository);
+
         //test si sortie existe et encort ouvert aux inscriptions
         $sortie = $sortieRepository->find($idSortie);
         if($sortie){
@@ -252,8 +256,9 @@ class SortiesController extends AbstractController
     }
 
     #[Route('/removeRegister/{idUser}&{idSortie}', name: 'removeRegister', requirements: ['idUser' => '\d+', 'idSortie' => '\d+'])]
-    public function removeRegister(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $idUser, int $idSortie): Response
+    public function removeRegister(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, int $idUser, int $idSortie): Response
     {
+        $this->majEtatSorties($sortieRepository, $etatRepository);
         //test si sortie existe et encore ouvert aux inscriptions
         $sortie = $sortieRepository->find($idSortie);
         if($sortie){
@@ -284,8 +289,9 @@ class SortiesController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'delete', requirements: ['id' => '\d+'])]
-    public function delete(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $id): Response
+    public function delete(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, int $id): Response
     {
+        $this->majEtatSorties($sortieRepository, $etatRepository);
         $etatAutorise = [1,2,3,5,6];
 
         $user = $this->getUserSession($request, $participantRepository);
@@ -311,18 +317,18 @@ class SortiesController extends AbstractController
     #[Route('/cancel/{id}', name: 'cancel', requirements: ['id' => '\d+'])]
     public function cancel(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, int $id): Response
     {
+        $this->majEtatSorties($sortieRepository, $etatRepository);
         $etatAutorise = [1,2,3];
 
         $user = $this->getUserSession($request, $participantRepository);
         $sortie = $sortieRepository->find($id);
 
-        if(!in_array($sortie->getEtat()->getId(), $etatAutorise)) {
-            $this->addFlash('error', 'Action impossible sur une sortie '.$sortie->getEtat()->getLibelle());
-
-            return $this->redirectToRoute('sortie_index');
-        }
-
         if($sortie){
+            if(!in_array($sortie->getEtat()->getId(), $etatAutorise)) {
+                $this->addFlash('error', 'Action impossible sur une sortie '.$sortie->getEtat()->getLibelle());
+
+                return $this->redirectToRoute('sortie_index');
+            }
             if($sortie->getOrganisateur() === $user){
                 $sortie->setEtat($etatRepository->find(6));
                 //update des données
@@ -350,4 +356,27 @@ class SortiesController extends AbstractController
         return false;
     }
 
+    private function majEtatSorties(SortieRepository $sortieRepository, EtatRepository $etatRepository): void{
+        $sorties = $sortieRepository->findAll();
+
+        foreach ($sorties as $sortie){
+            switch ($sortie->getEtat()->getId()){
+                case 1:
+                    $sortie->setEtat($etatRepository->find(2));
+                    break;
+                case 2:
+                    if($sortie->getDateLimiteInscription() < new \DateTime()) $sortie->setEtat($etatRepository->find(3));
+                    break;
+                case 3:
+                    if($sortie->getDateHeureDebut() < new \DateTime()) $sortie->setEtat($etatRepository->find(4));
+                    break;
+                case 4:
+                    $timeStampFin = strtotime($sortie->getDateHeureDebut()->format('d-m-Y h:m:s'))+$sortie->getDuree();
+                    $timeStampNow = strtotime((new \DateTime())->format('d-m-Y h:m:s'));
+
+                    if($timeStampNow > $timeStampFin) $sortie->setEtat($etatRepository->find(5));
+                    break;
+            }
+        }
+    }
 }
