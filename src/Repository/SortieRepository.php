@@ -99,10 +99,6 @@ class SortieRepository extends ServiceEntityRepository
     public function findByInscrit($sortie_inscrit)
     {
         return $this->createQueryBuilder('s')
-            ->join('s.participant','participant')
-            ->join('participant.sorties_inscrits','inscrit')
-            ->andWhere('inscrit.sorties_inscrits = :sortie_inscrit')
-            ->setParameter('sortie_inscrit', $sortie_inscrit)
             ->getQuery()
             ->getResult()
             ;

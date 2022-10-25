@@ -14,6 +14,7 @@ use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Utils\MajEtatSorties;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,7 +63,10 @@ class SortiesController extends AbstractController
 
 
     #[Route('', name: 'index')]
-    public function index(SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
+    public function index(SortieRepository $sortieRepository,
+                          EtatRepository $etatRepository,
+                          Request $request,
+                          PaginatorInterface $paginator): Response
 
     {
         $this->onLoad($sortieRepository, $etatRepository);
@@ -76,7 +80,6 @@ class SortiesController extends AbstractController
             $siteChoix = $formFilter->get('site')->getData();
             $nomSortie = $formFilter->get('nom')->getData();
 //            $sortieInscrit = $formFilter->get('participants')->getData();
-//            dd($sortieInscrit);
 //            $dateDSortie = $formFilter->get('dateHeureDebut')->getData();
 //            $dateFSortie = $formFilter->get('dateLimiteInscription')->getData();
 
@@ -89,11 +92,17 @@ class SortiesController extends AbstractController
 //            if($dateDSortie && $dateFSortie){
 //                $sorties = $sortieRepository->findByDate($dateDSortie,$dateFSortie);
 //            }
-//            if($sortie_inscrit){
-//                $sorties = $sortieRepository->findByInscrit($sortie_inscrit);
+//            if($sortieInscrit){
+//                $sorties = $sortieRepository->findByInscrit($sortieInscrit);
+//                dd($sorties);
 //            }
 
         }
+
+        $sorties = $paginator->paginate(
+            $sorties,
+            $request->query->getInt('page', 1),
+            15);
 
         return $this->render('sorties/list.html.twig', [
             'sorties' => $sorties,

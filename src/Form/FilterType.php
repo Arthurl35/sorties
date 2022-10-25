@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
@@ -45,10 +46,15 @@ class FilterType extends AbstractType
                     return $siteRepository->createQueryBuilder('s')->addGroupBy('s.nom');
                 }
             ])
-//            ->add('participants',CheckboxType::class,[
-//                'class' => Participant::class,
+//            ->add('participants',CollectionType::class,[
+//                'entry_type' => CheckboxType::class,
+//                'entry_options' => [
+//                    'required' => false,
+//                ],
 //                'label' => 'Sorties auxquelles je suis inscrit/e'
 //            ])
+//            ->add('organisateur', Sortie::class)
+
         ;
     }
 
