@@ -344,8 +344,7 @@ class SortiesController extends AbstractController
 
     //retourne le user actuel
     private function getUserSession(Request $request,ParticipantRepository $participantRepository): Participant{
-        $user = $participantRepository->findOneBy(['email' => $request->getSession()->get('_security.last_username')]);
-        return $user;
+        return $participantRepository->findOneBy(['email' => $request->getSession()->get('_security.last_username')]);
     }
 
     //test si user est inscrit ou non

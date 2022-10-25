@@ -54,36 +54,6 @@ class SortieRepository extends ServiceEntityRepository
         ;
     }
 
-    public function updateEtatSortie(EtatRepository $etatRepository){
-        $sorties = $this->findAll();
-
-        //1 Créée
-        //2 Ouverte
-        //3 Clôturée
-        //4 Activité
-        //5 Passé
-        //6 Annulée
-        foreach ($sorties as $sortie){
-            switch ($sortie->getEtat()->getId()){
-                case 1:
-                    $sortie->setEtat($etatRepository->find(2));
-                    break;
-                case 2:
-                    if($sortie->getDateLimiteInscription() < new \DateTime()) $sortie->setEtat($etatRepository->find(3));
-                    break;
-                case 3:
-                    if($sortie->getDateHeureDebut() < new \DateTime()) $sortie->setEtat($etatRepository->find(4));
-                    break;
-                case 4:
-                    $timeStampFin = strtotime($sortie->getDateHeureDebut()->format('d-m-Y h:m:s'))+$sortie->getDuree();
-                    $timeStampNow = strtotime((new \DateTime())->format('d-m-Y h:m:s'));
-
-                    if($timeStampNow > $timeStampFin) $sortie->setEtat($etatRepository->find(5));
-                    break;
-            }
-        }
-    }
-
 //    public function findOneBySomeField($value): ?Sortie
 //    {
 //        return $this->createQueryBuilder('s')
