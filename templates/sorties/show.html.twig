@@ -11,11 +11,20 @@
     <ul>
         <li>Organisateur : {{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</li>
         <li>Nom : {{ sortie.nom }}</li>
-        <li>Date : {{ sortie.dateHeureDebut | date('d-m-Y') }}</li>
+        <p></p>
         <li>Cloture : {{ sortie.dateLimiteInscription | date('d-m-Y') }}</li>
+        <p></p>
         <li>Nombres d'inscrits : {{ sortie.participants | length }}/{{ sortie.nbInscriptionMax }}</li>
         <li>Etat : {{ sortie.etat.libelle }}</li>
     </ul>
+
+    <ul>
+        <li>Date : {{ sortie.dateHeureDebut | date('d-m-Y h:m') }}</li>
+        <li>Rue : {{ sortie.lieu.rue }}</li>
+        <li>Ville : {{ sortie.lieu.ville }}</li>
+        <li>Code postal : {{ sortie.lieu.cp }}</li>
+    </ul>
+
 
     {% if app.user.id == sortie.organisateur.id %}
         {% if sortie.etat.id == 1 or sortie.etat.id == 2 %}

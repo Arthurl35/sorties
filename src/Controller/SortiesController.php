@@ -29,19 +29,10 @@ class SortiesController extends AbstractController
 
     }
 
-    public function onLoad(SortieRepository $sortieRepository, EtatRepository $etatRepository): void
-    {
-
-
-
-    }
-
-
     #[Route('', name: 'index')]
     public function index(SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
 
     {
-        $this->onLoad($sortieRepository, $etatRepository);
         $sorties = $sortieRepository->findAll();
 
         //Filtres
@@ -60,9 +51,9 @@ class SortiesController extends AbstractController
     }
 
     #[Route('/show/{id}', name: 'show', requirements: ['id' => '\d+'])]
-    public function show(SortieRepository $sortieRepository, ParticipantRepository $participantRepository, $id): Response
+    public function show(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, $id): Response
     {
-        $user = $participantRepository->find(21);
+        $user = $this->getUserSession($request, $participantRepository);
         $sortie = $sortieRepository->find($id);
 
         return $this->render('sorties/show.html.twig', [
@@ -76,12 +67,10 @@ class SortiesController extends AbstractController
     public function addOrEdit(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository, int $id = null): Response
     {
         //récupère le user
-        //$user = $participantRepository->findBy(['email' => $request->getSession()->get('_security.last_username')]);
-        $user = $participantRepository->find(21);
+        $user = $this->getUserSession($request, $participantRepository);
 
         //récupère les états existants
         $etatCree = $etatRepository->find(1);
-        $etatAnnule = $etatRepository->find(6);
 
         $etatAutorise = [1,2];
 
@@ -231,7 +220,7 @@ class SortiesController extends AbstractController
     }
 
     #[Route('/addRegister/{idUser}&{idSortie}', name: 'addRegister', requirements: ['idUser' => '\d+', 'idSortie' => '\d+'])]
-    public function addRegister(SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $idUser, int $idSortie): Response
+    public function addRegister(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $idUser, int $idSortie): Response
     {
         //test si sortie existe et encort ouvert aux inscriptions
         $sortie = $sortieRepository->find($idSortie);
@@ -245,7 +234,7 @@ class SortiesController extends AbstractController
         else $this->addFlash('error', 'la sortie n\'existe pas !');
 
         //test si utilisateur correspond et n'est pas déjà inscrit
-        $user = $participantRepository->find(21);
+        $user = $this->getUserSession($request, $participantRepository);
         if($user->getId() == $idUser){
             if(!$this->isInscrit($user, $sortie)){
                 //on inscrit
@@ -263,9 +252,9 @@ class SortiesController extends AbstractController
     }
 
     #[Route('/removeRegister/{idUser}&{idSortie}', name: 'removeRegister', requirements: ['idUser' => '\d+', 'idSortie' => '\d+'])]
-    public function removeRegister(SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $idUser, int $idSortie): Response
+    public function removeRegister(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $idUser, int $idSortie): Response
     {
-        //test si sortie existe et encort ouvert aux inscriptions
+        //test si sortie existe et encore ouvert aux inscriptions
         $sortie = $sortieRepository->find($idSortie);
         if($sortie){
             $etat = $sortie->getEtat();
@@ -277,7 +266,7 @@ class SortiesController extends AbstractController
         else $this->addFlash('error', 'la sortie n\'existe pas !');
 
         //test si utilisateur correspond et n'est pas déjà inscrit
-        $user = $participantRepository->find(21);
+        $user = $this->getUserSession($request, $participantRepository);
         if($user->getId() == $idUser){
             if($this->isInscrit($user, $sortie)){
                 //on désinscrit
@@ -295,16 +284,16 @@ class SortiesController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'delete', requirements: ['id' => '\d+'])]
-    public function delete(SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $id): Response
+    public function delete(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $id): Response
     {
         $etatAutorise = [1,2,3,5,6];
 
-        $user = $participantRepository->find(21);
+        $user = $this->getUserSession($request, $participantRepository);
         $sortie = $sortieRepository->find($id);
 
         if($sortie){
             if(!in_array($sortie->getEtat()->getId(), $etatAutorise)) {
-                $this->addFlash('error', 'Action impossible sur une sortie '+$sortie->getEtat()->getLibelle());
+                $this->addFlash('error', 'Action impossible sur une sortie '.$sortie->getEtat()->getLibelle());
 
                 return $this->redirectToRoute('sortie_index');
             }
@@ -320,15 +309,15 @@ class SortiesController extends AbstractController
     }
 
     #[Route('/cancel/{id}', name: 'cancel', requirements: ['id' => '\d+'])]
-    public function cancel(SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, int $id): Response
+    public function cancel(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, int $id): Response
     {
         $etatAutorise = [1,2,3];
 
-        $user = $participantRepository->find(21);
+        $user = $this->getUserSession($request, $participantRepository);
         $sortie = $sortieRepository->find($id);
 
         if(!in_array($sortie->getEtat()->getId(), $etatAutorise)) {
-            $this->addFlash('error', 'Action impossible sur une sortie '+$sortie->getEtat()->getLibelle());
+            $this->addFlash('error', 'Action impossible sur une sortie '.$sortie->getEtat()->getLibelle());
 
             return $this->redirectToRoute('sortie_index');
         }
@@ -345,6 +334,12 @@ class SortiesController extends AbstractController
         else $this->addFlash('error', 'La sortie n\'existe pas');
 
         return $this->redirectToRoute('sortie_index');
+    }
+
+    //retourne le user actuel
+    private function getUserSession(Request $request,ParticipantRepository $participantRepository): Participant{
+        $user = $participantRepository->findOneBy(['email' => $request->getSession()->get('_security.last_username')]);
+        return $user;
     }
 
     //test si user est inscrit ou non
