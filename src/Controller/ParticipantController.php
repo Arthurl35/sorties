@@ -72,6 +72,31 @@ class ParticipantController extends AbstractController
         ]);
     }
 
+    #[Route('/new_csv', name: 'app_participant_new_csv', methods: ['GET', 'POST'])]
+    public function new_csv(Request $request,
+                        ParticipantRepository $participantRepository,
+                        Upload $upload,
+                        UserPasswordHasherInterface $userPasswordHasher,
+
+        $id = null): Response
+    {
+        $participant = new Participant();
+        $form = $this->createForm(ParticipantType::class, $participant);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+
+            return $this->redirectToRoute('app_participant_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('participant/new.html.twig', [
+            'participant' => $participant,
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/{id}', name: 'app_participant_show', methods: ['GET'])]
     public function show(Participant $participant): Response
     {
