@@ -6,6 +6,7 @@ use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Form\FilterType;
 use App\Form\LieuType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
@@ -62,24 +63,43 @@ class SortiesController extends AbstractController
 
     #[Route('', name: 'index')]
 
-    public function index(SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
+    public function index(Request $request,SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
 
     {
         $this->onLoad($sortieRepository, $etatRepository);
         $sorties = $sortieRepository->findAll();
 
         //Filtres
-//        $filterForm = $this->createForm(SortieType::class, $sorties, ['data' => $sorties]);
-//        $filterForm->handleRequest($request);
+        $formFilter = $this->createForm(FilterType::class);
+        $formFilter->handleRequest($request);
 
-        //handle permet de savoir dans quel cas nous sommes
-//        if($filterForm->isSubmitted() && $filterForm->isValid()){
-//
-//
-//        }
+        if($formFilter->isSubmitted() && $formFilter->isValid()){
+            $siteChoix = $formFilter->get('site')->getData();
+            $nomSortie = $formFilter->get('nom')->getData();
+//            $sortieInscrit = $formFilter->get('participants')->getData();
+//            dd($sortieInscrit);
+//            $dateDSortie = $formFilter->get('dateHeureDebut')->getData();
+//            $dateFSortie = $formFilter->get('dateLimiteInscription')->getData();
+
+            if($siteChoix){
+                $sorties = $sortieRepository->findBySite($siteChoix);
+            }
+            if($nomSortie){
+                $sorties = $sortieRepository->findByNom($nomSortie);
+            }
+//            if($dateDSortie && $dateFSortie){
+//                $sorties = $sortieRepository->findByDate($dateDSortie,$dateFSortie);
+//            }
+//            if($sortie_inscrit){
+//                $sorties = $sortieRepository->findByInscrit($sortie_inscrit);
+//            }
+
+        }
+
         return $this->render('sorties/list.html.twig', [
             'sorties' => $sorties,
-//            'filterForm' => $filterForm,
+
+            'formFilter' => $formFilter->createView(),
         ]);
     }
 

@@ -2,11 +2,13 @@
 
 namespace App\Form;
 
+use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Repository\SiteRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -20,26 +22,33 @@ class FilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', SearchType::class, ['label' => 'Le nom de la sortie contient :'])
-            ->add('dateHeureDebut',DateTimeType::class, [
-                'label' => 'Entre',
-                'html5' => true,
-                'widget' => 'single_text'
+            ->add('nom', SearchType::class,[
+                'method' => 'GET',
+                'required' => false
             ])
-            ->add('dateLimiteInscription',DateType::class, [
-                'label' => 'et',
-                'html5' => true,
-                'widget' => 'single_text'
-            ])
+//            ->add('dateHeureDebut',DateType::class, [
+//                'label' => 'Entre',
+//                'html5' => true,
+//                'required' => false,
+//                'widget' => 'single_text'
+//            ])
+//            ->add('dateLimiteInscription',DateType::class, [
+//                'label' => 'et',
+//                'html5' => true,
+//                'required' => false,
+//                'widget' => 'single_text'
+//            ])
             ->add('site', EntityType::class, [
                 'class' => Site::class,
-                'choice_label' => 'nom',
+                'mapped' => false,
                 'query_builder' => function (SiteRepository $siteRepository ){
                     return $siteRepository->createQueryBuilder('s')->addGroupBy('s.nom');
                 }
             ])
-            ->add('organisateur')
-            ->add('participants')
+//            ->add('participants',CheckboxType::class,[
+//                'class' => Participant::class,
+//                'label' => 'Sorties auxquelles je suis inscrit/e'
+//            ])
         ;
     }
 

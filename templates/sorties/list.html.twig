@@ -7,25 +7,31 @@
 {% block body %}
 
     <h2 class="body-title">Accueil</h2>
-    <fieldset>
-        <legend>Filtres : </legend>
-        <div>
-            <input type="checkbox" id="organisateur" name="organisateur" checked>
-            <label for="organisateur">Sorties dont je suis l'organisateur/trice</label>
-        </div>
-        <div>
-            <input type="checkbox" id="inscrit" name="inscrit">
-            <label for="inscrit">Sorties auxquelles je suis inscrit(e)</label>
-        </div>
-        <div>
-            <input type="checkbox" id="pasInscrit" name="pasInscrit">
-            <label for="pasInscrit">Sorties auxquelles je ne suis pas inscrit(e)</label>
-        </div>
-        <div>
-            <input type="checkbox" id="expirer" name="expirer">
-            <label for="expirer">Sorties passées</label>
-        </div>
-    </fieldset>
+{#    <fieldset>#}
+{#        <legend>Filtres : </legend>#}
+{#        <div>#}
+{#            <input type="checkbox" id="organisateur" name="organisateur" checked>#}
+{#            <label for="organisateur">Sorties dont je suis l'organisateur/trice</label>#}
+{#        </div>#}
+{#        <div>#}
+{#            <input type="checkbox" id="inscrit" name="inscrit">#}
+{#            <label for="inscrit">Sorties auxquelles je suis inscrit(e)</label>#}
+{#        </div>#}
+{#        <div>#}
+{#            <input type="checkbox" id="pasInscrit" name="pasInscrit">#}
+{#            <label for="pasInscrit">Sorties auxquelles je ne suis pas inscrit(e)</label>#}
+{#        </div>#}
+{#        <div>#}
+{#            <input type="checkbox" id="expirer" name="expirer">#}
+{#            <label for="expirer">Sorties passées</label>#}
+{#        </div>#}
+{#    </fieldset>#}
+    <div>
+        {{ form_start(formFilter) }}
+        {{ form_widget(formFilter) }}
+        <button class="btn">{{ button_label|default('Recherche') }}</button>
+        {{ form_end(formFilter) }}
+    </div>
     <div>
         <table>
             <tr>

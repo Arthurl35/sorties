@@ -63,4 +63,50 @@ class SortieRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findBySite(String $siteChoix)
+    {
+        return $this->createQueryBuilder('s')
+            ->join('s.site','site')
+            ->andWhere('site.nom = :siteChoix')
+            ->setParameter('siteChoix', $siteChoix)
+            ->getQuery()
+            ->getResult()
+            ;
+
+    }
+
+    public function findByNom($nomSortie)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.nom LIKE :nomSortie')
+            ->setParameter('nomSortie', '%'.$nomSortie.'%')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findByDate($dateDSortie, $dateFSortie)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.dateHeureDebut BETWEEN :debut AND :fin' )
+            ->setParameter('debut', $dateDSortie->format('Y-m-d'))
+            ->setParameter('fin', $dateFSortie->format('Y-m-d'))
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findByInscrit($sortie_inscrit)
+    {
+        return $this->createQueryBuilder('s')
+            ->join('s.participant','participant')
+            ->join('participant.sorties_inscrits','inscrit')
+            ->andWhere('inscrit.sorties_inscrits = :sortie_inscrit')
+            ->setParameter('sortie_inscrit', $sortie_inscrit)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+
 }
