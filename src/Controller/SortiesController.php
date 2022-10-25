@@ -12,7 +12,7 @@ use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
-use App\Utils\MajEtatSorties;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -74,7 +74,7 @@ class SortiesController extends AbstractController
         //récupère les états existants
         $etatCree = $etatRepository->find(1);
 
-        $etatAutorise = [1,2];
+        $etatAutorise = [1,2,3];
 
         //libelle du btn submit à écouter
         $libelleSubmit = "enregistrer";
@@ -99,7 +99,9 @@ class SortiesController extends AbstractController
         //selon création ou édition et l'état si édition on supprime des éléments du form
         if ($id) {
             $sortieForm->remove("enregistrer");
+            if($sortie->getEtat()->getId() != 1) $sortieForm->remove("publier");
         } else {
+            $sortieForm->remove("publier");
             $sortieForm->remove("modifier");
             $sortieForm->remove("annuler");
             $sortieForm->remove("supprimer");
@@ -128,20 +130,26 @@ class SortiesController extends AbstractController
             //4 Activité en cours
             //5 Passé
             //6 Annulée
-
             //Gestion Création Publication Modification
+            if($libelleSubmit == "modifier"){
+                if($sortieForm->get("publier")->isClicked()) $libelleSubmit = "publier";
+            }
+
             if ($sortieForm->get($libelleSubmit)->isClicked()) {
 
                 //si enregistrement set etat enregirée sinon set etat ouvert
                 if ($libelleSubmit == "enregistrer") {
                     $messageValid = 'sortie Créée !';
                 }
-                if ($libelleSubmit == "modifier") {
+                else if ($libelleSubmit == "modifier") {
                     $messageValid = 'sortie Modifiée !';
+                }
+                else if ($libelleSubmit == "publier") {
+                    $messageValid = 'sortie Publiée !';
                 }
 
                 //traitement des données
-                if ($sortieRepository->findBy(['nom' => $sortie->getNom()]) && $libelleSubmit != "modifier") {
+                if ($sortieRepository->findBy(['nom' => $sortie->getNom()]) && $libelleSubmit != "modifier" && $libelleSubmit != "publier") {
                     $this->addFlash('error', 'une sortie existe déjà sous ce nom !');
 
                     return $this->render('sorties/add.html.twig', [
@@ -191,7 +199,7 @@ class SortiesController extends AbstractController
                             ]);
                         }
                     }
-
+                    if($libelleSubmit == "publier") return $this->redirectToRoute('sortie_publish', ['id' => $sortie->getId()]);
                     //update des données
                     $sortieRepository->save($sortie, true);
                     $this->addFlash('success', $messageValid);
@@ -342,6 +350,34 @@ class SortiesController extends AbstractController
         return $this->redirectToRoute('sortie_index');
     }
 
+    #[Route('/publish/{id}', name: 'publish', requirements: ['id' => '\d+'])]
+    public function publish(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, int $id): Response
+    {
+        $this->majEtatSorties($sortieRepository, $etatRepository);
+        $etatAutorise = [1];
+
+        $user = $this->getUserSession($request, $participantRepository);
+        $sortie = $sortieRepository->find($id);
+
+        if($sortie){
+            if(!in_array($sortie->getEtat()->getId(), $etatAutorise)) {
+                $this->addFlash('error', 'Action impossible sur une sortie '.$sortie->getEtat()->getLibelle());
+
+                return $this->redirectToRoute('sortie_index');
+            }
+            if($sortie->getOrganisateur() === $user){
+                $sortie->setEtat($etatRepository->find(2));
+                //update des données
+                $sortieRepository->save($sortie, true);
+                $this->addFlash('success', 'sortie Publiée !');
+            }
+            else $this->addFlash('error', 'tentative non autorisée !');
+        }
+        else $this->addFlash('error', 'La sortie n\'existe pas');
+
+        return $this->redirectToRoute('sortie_index');
+    }
+
     //retourne le user actuel
     private function getUserSession(Request $request,ParticipantRepository $participantRepository): Participant{
         return $participantRepository->findOneBy(['email' => $request->getSession()->get('_security.last_username')]);
@@ -360,9 +396,6 @@ class SortiesController extends AbstractController
 
         foreach ($sorties as $sortie){
             switch ($sortie->getEtat()->getId()){
-                case 1:
-                    $sortie->setEtat($etatRepository->find(2));
-                    break;
                 case 2:
                     if($sortie->getDateLimiteInscription() < new \DateTime()) $sortie->setEtat($etatRepository->find(3));
                     break;

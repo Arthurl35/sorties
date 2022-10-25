@@ -107,6 +107,7 @@ class SortieType extends AbstractType
                 ]
             ])
             ->add('enregistrer', SubmitType::class)
+            ->add('publier', SubmitType::class)
             ->add('modifier', SubmitType::class)
             ->add('annuler', SubmitType::class)
             ->add('supprimer', SubmitType::class)
