@@ -46,10 +46,8 @@ class SortiesController extends AbstractController
         $this->majEtatSorties($sortieRepository, $etatRepository);
         $user = $this->getUserSession($request, $participantRepository);
         $sorties = $sortieRepository->findAll();
+
         $filter = new Filter();
-
-
-        $sorties1 = array();
 
 
 
@@ -73,29 +71,30 @@ class SortiesController extends AbstractController
 
             $response = $sortieRepository->findByFilter($filter, $user->getId());
 
-            foreach ($response as $row){
-                $sortie1 = new sortie();
-                $sortie1->setId($row['id']);
-                $sortie1->setNom($row['nom']);
-                //$sortie1->setDateHeureDebut($row['date_heure_debut']);
-                $sortie1->setDateHeureDebut(new \DateTime());
-                $sortie1->setDuree($row['duree']);
-                //$sortie1->setDateLimiteInscription($row['date_limite_inscription']);
-                $sortie1->setDateLimiteInscription(new \DateTime());
 
-                $sortie1->setNbInscriptionMax($row['nb_inscription_max']);
-                $sortie1->setInfosSortie($row['infos_sortie']);
-                $sortie1->setLieu($lieuRepository->find($row['lieu_id']));
-                $sortie1->setEtat($etatRepository->find($row['etat_id']));
-                $sortie1->setSite($siteRepository->find($row['site_id']));
-                $sortie1->setOrganisateur($participantRepository->find($row['organisateur_id']));
-                $sorties1[] = $sortie1;
+            unset($sorties);
+            foreach ($response as $row){
+                $sortie = new sortie();
+                $sortie->setId($row['id']);
+                $sortie->setNom($row['nom']);
+                //$sortie1->setDateHeureDebut($row['date_heure_debut']);
+                $sortie->setDateHeureDebut(new \DateTime());
+                $sortie->setDuree($row['duree']);
+                //$sortie1->setDateLimiteInscription($row['date_limite_inscription']);
+                $sortie->setDateLimiteInscription(new \DateTime());
+
+                $sortie->setNbInscriptionMax($row['nb_inscription_max']);
+                $sortie->setInfosSortie($row['infos_sortie']);
+                $sortie->setLieu($lieuRepository->find($row['lieu_id']));
+                $sortie->setEtat($etatRepository->find($row['etat_id']));
+                $sortie->setSite($siteRepository->find($row['site_id']));
+                $sortie->setOrganisateur($participantRepository->find($row['organisateur_id']));
+                $sorties[] = $sortie;
             }
         }
         return $this->render('sorties/list.html.twig', [
             'filterForm' => $filterForm->createView(),
             'sorties' => $sorties,
-            'sorties1' => $sorties1,
         ]);
     }
 
@@ -338,12 +337,15 @@ class SortiesController extends AbstractController
         $user = $this->getUserSession($request, $participantRepository);
         if($user->getId() == $idUser){
             if($this->isInscrit($user, $sortie)){
-                //on désinscrit
-                $sortie->getParticipants()->remove($sortie->getParticipants()->indexOf($user));
-                //update des données
-                $sortieRepository->save($sortie, true);
+               if($sortie->getOrganisateur()->getId() == $user->getId()) $this->addFlash('error', 'vous ne pouvez vous désinscrire si vous êtes l\'organisateur');
+               else{
+                   //on désinscrit
+                   $sortie->getParticipants()->remove($sortie->getParticipants()->indexOf($user));
+                   //update des données
+                   $sortieRepository->save($sortie, true);
 
-                $this->addFlash('success', 'Désinscription réussi !');
+                   $this->addFlash('success', 'Désinscription réussi !');
+               }
             }
             else $this->addFlash('error', 'vous êtes n\'êtes pas inscrit !');
         }
