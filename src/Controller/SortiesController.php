@@ -125,7 +125,7 @@ class SortiesController extends AbstractController
 
     #[Route('/add', name: 'add')]
     #[Route('/edit/{id}', name: 'edit', requirements: ['id' => '\d+'])]
-    public function addOrEdit(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository, int $id = null): Response
+    public function addOrEdit(Request $request, SortieRepository $sortieRepository, EtatRepository  $etatRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository, int $id = null): Response
     {
         //récupère le user
         //$user = $participantRepository->findBy(['email' => $request->getSession()->get('_security.last_username')]);
