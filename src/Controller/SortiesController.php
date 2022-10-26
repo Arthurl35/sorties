@@ -3,16 +3,23 @@
 namespace App\Controller;
 
 use App\Entity\Etat;
+use App\Entity\Filter;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Form\FilterType;
 use App\Form\LieuType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
+use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 
+use DateTime;
+use DateTimeImmutable;
+use Doctrine\DBAL\Exception;
+use phpDocumentor\Reflection\Types\Collection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,26 +36,66 @@ class SortiesController extends AbstractController
 
     }
 
+    /**
+     * @throws Exception
+     */
     #[Route('', name: 'index')]
-    public function index(SortieRepository $sortieRepository, EtatRepository $etatRepository): Response
+    public function index(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, SiteRepository $siteRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository): Response
 
     {
         $this->majEtatSorties($sortieRepository, $etatRepository);
+        $user = $this->getUserSession($request, $participantRepository);
         $sorties = $sortieRepository->findAll();
+        $filter = new Filter();
+
+
+        $sorties1 = array();
 
 
 
         //Filtres
-//        $filterForm = $this->createForm(SortieType::class, $sorties, ['data' => $sorties]);
-//        $filterForm->handleRequest($request);
+        $filterForm = $this->createForm(FilterType::class, $filter, ['data' => $filter]);
+        $filterForm->handleRequest($request);
 
         //handle permet de savoir dans quel cas nous sommes
-//        if($filterForm->isSubmitted() && $filterForm->isValid()){
-//
-//
-//        }
+        if($filterForm->isSubmitted() && $filterForm->isValid()){
+
+            $filter->setSite($filterForm->get('site')->getData());
+            if($filter->getSite()->getId() == 0) $filter->setSite(null);
+
+            $filter->setNom($filterForm->get('nom')->getData());
+            $filter->setDateHeureDebut($filterForm->get('dateHeureDebut')->getData());
+            $filter->setDateHeureFin($filterForm->get('dateHeureFin')->getData());
+            $filter->setSortieOrganisateur($filterForm->get('sortieOrganisateur')->getData());
+            $filter->setSortieInscrit($filterForm->get('sortieInscrit')->getData());
+            $filter->setSortiePasInscrit($filterForm->get('sortiePasInscrit')->getData());
+            $filter->setSortiePasse($filterForm->get('sortiePasse')->getData());
+
+            $response = $sortieRepository->findByFilter($filter, $user->getId());
+
+            foreach ($response as $row){
+                $sortie1 = new sortie();
+                $sortie1->setId($row['id']);
+                $sortie1->setNom($row['nom']);
+                //$sortie1->setDateHeureDebut($row['date_heure_debut']);
+                $sortie1->setDateHeureDebut(new \DateTime());
+                $sortie1->setDuree($row['duree']);
+                //$sortie1->setDateLimiteInscription($row['date_limite_inscription']);
+                $sortie1->setDateLimiteInscription(new \DateTime());
+
+                $sortie1->setNbInscriptionMax($row['nb_inscription_max']);
+                $sortie1->setInfosSortie($row['infos_sortie']);
+                $sortie1->setLieu($lieuRepository->find($row['lieu_id']));
+                $sortie1->setEtat($etatRepository->find($row['etat_id']));
+                $sortie1->setSite($siteRepository->find($row['site_id']));
+                $sortie1->setOrganisateur($participantRepository->find($row['organisateur_id']));
+                $sorties1[] = $sortie1;
+            }
+        }
         return $this->render('sorties/list.html.twig', [
+            'filterForm' => $filterForm->createView(),
             'sorties' => $sorties,
+            'sorties1' => $sorties1,
         ]);
     }
 
