@@ -18,40 +18,7 @@ class MainController extends AbstractController
          */
     public function home(SortieRepository $sortieRepository): Response
     {
-        $sortie = $sortieRepository->find(28);
-        //foreach ($user->getSortiesInscrits() as $sortie){
-        //    echo $sortie;
-        //}
-        //return $this->render('main/home.html.twig');
-
-        $dureeSeconde = 100*60;
-
-        $dateDebut = $sortie->getDateHeureDebut()->format('d-m-Y h:m:s');
-        $timeStampDebut = strtotime($dateDebut);
-        $timeStampFin = $timeStampDebut+$dureeSeconde;
-
-        $dateNow = new \DateTime();
-
-        $timeStampNow = (strtotime($dateNow->format('d-m-Y h:m:s')));
-
-        echo "Debut";
-        echo $timeStampDebut;
-        echo "<br>";
-        echo "Fin";
-        echo $timeStampFin;
-        echo "<br>";
-        echo "NOW";
-        echo $timeStampNow;
-        echo "<br>";
-
-
-
-
-
-        return $this->render('main/home.html.twig', ['sortie' => $sortie]);
-
-
-
+        return $this->redirectToRoute('sortie_index');
     }
 
 
