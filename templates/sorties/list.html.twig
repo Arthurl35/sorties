@@ -29,28 +29,28 @@
 
             {% for sortie in sorties %}
                 <tr>
-
                     <td>{{ sortie.nom }}</td>
                     <td>{{ sortie.dateHeureDebut | date('d-m-Y') }}</td>
                     <td>{{ sortie.dateLimiteInscription | date('d-m-Y') }}</td>
                     <td>{{ sortie.participants | length }}/{{ sortie.nbInscriptionMax }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
-                    <td>{% if sortie.participants | length != 0 %}
-
-                            {% for participant in sortie.participants %}
-
-                                {% if participant.id == app.user.id %}
-                                    <span> ✔</span>
-                                {% endif %}
-                            {% endfor %}
+                    <td>{% if app.user %}
+                            {% if sortie.participants | length != 0 %}
+                                {% for participant in sortie.participants %}
+                                    {% if participant.id == app.user.id %}
+                                        <span>✔</span>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                         {% endif %}
 
                     </td>
-                    <td><a href="{{ path('profil_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</a></td>
+                    <td>
+                        <a href="{{ path('profil_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</a>
+                    </td>
                 </tr>
             {% endfor %}
         </table>
     </div>
-
     {{ knp_pagination_render(sorties) }}
 {% endblock %}

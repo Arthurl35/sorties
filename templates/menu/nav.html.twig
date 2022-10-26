@@ -12,7 +12,7 @@
         {% if app.user %}
             <li>
                 <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
-                    <i class="fa fa-user fa-2x"></i>
+                    <i class="fa fa-pencil"></i>
                     <span class="nav-text">
                                 Modifier mon profil
                             </span>
@@ -43,7 +43,7 @@
 
             <li>
                 <a href="{{ path('sortie_add') }}">
-                    <i class="fa fa-table fa-2x"></i>
+                    <i class="fa fa-plus"></i>
                     <span class="nav-text">
                                 Créer une sortie
                             </span>
@@ -52,7 +52,7 @@
 
             <li>
                 <a href="{{ path('app_site_index', {'id':app.user.id}) }}">
-                    <i class="fa fa-user fa-2x"></i>
+                    <i class="fa fa-sitemap"></i>
                     <span class="nav-text">
                                 Gérer les sites
                             </span>
@@ -61,7 +61,7 @@
             <li>
 
                 <a href="{{ path('app_lieu_index') }}">
-                    <i class="fa fa-user fa-2x"></i>
+                    <i class="fa fa-map-marker"></i>
                     <span class="nav-text">
                                 Gérer les lieux
                             </span>

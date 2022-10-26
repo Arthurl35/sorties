@@ -99,10 +99,10 @@ class SortiesController extends AbstractController
 
         }
 
-        $sorties = $paginator->paginate(
+            $sorties = $paginator->paginate(
             $sorties,
             $request->query->getInt('page', 1),
-            15);
+            5);
 
         return $this->render('sorties/list.html.twig', [
             'sorties' => $sorties,
