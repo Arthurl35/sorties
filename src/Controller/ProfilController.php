@@ -50,7 +50,7 @@ class ProfilController extends AbstractController
                 $participantRepository->add($participant, true);
 
                 //feedback user
-                $this->addFlash('success', 'Participant' . $id . 'a été modifié !');
+                $this->addFlash('success', 'Votre profil a bien été modifié ' . $participant->getNom() . ' ' . $participant->getPrenom() . ' !');
             }
 
 
