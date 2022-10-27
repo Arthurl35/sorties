@@ -20,6 +20,8 @@ use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
 use phpDocumentor\Reflection\Types\Collection;
+use App\Utils\MajEtatSorties;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -69,11 +71,10 @@ class SortiesController extends AbstractController
             $filter->setSortiePasInscrit($filterForm->get('sortiePasInscrit')->getData());
             $filter->setSortiePasse($filterForm->get('sortiePasse')->getData());
 
-            $sorties = $sortieRepository->findByFilter($filter, $user, $etatRepository->find(5));
-
-
-            /*unset($sorties);
             $response = $sortieRepository->findByFilter($filter, $user->getId());
+
+
+            unset($sorties);
             foreach ($response as $row){
                 $sortie = new sortie();
                 $sortie->setId($row['id']);
@@ -91,7 +92,7 @@ class SortiesController extends AbstractController
                 $sortie->setSite($siteRepository->find($row['site_id']));
                 $sortie->setOrganisateur($participantRepository->find($row['organisateur_id']));
                 $sorties[] = $sortie;
-            }*/
+            }
         }
         return $this->render('sorties/list.html.twig', [
             'filterForm' => $filterForm->createView(),

@@ -8,6 +8,7 @@
 
     <h2 class="body-title">Accueil</h2>
 
+
     <div>
         <h3>Filtres :</h3>
         {{ form_start(filterForm) }}
@@ -15,6 +16,7 @@
         {{ form_end(filterForm) }}
     </div>
 
+    </div>
     <div>
         <table class="table">
             <thead>
@@ -91,8 +93,13 @@
                                 {% endif %}
                             {% else %}
                                 <span>Inscription à venir</span>
+
                             {% endif %}
                         {% endif %}
+
+                    </td>
+                    <td>
+                        <a href="{{ path('profil_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</a>
                     </td>
                     <td>{{ sortie.etat.libelle }}</td>
                     <td><a href="{{ path('sortie_show', {'id': sortie.id}) }}">view</a></td>
@@ -109,4 +116,5 @@
             {% endfor %}
         </table>
     </div>
+    {{ knp_pagination_render(sorties) }}
 {% endblock %}

@@ -11,6 +11,15 @@
             </svg>
             Nouveau participant</button></a>
 
+
+
+    {{ form_start(form_csv) }}
+    {{ form_widget(form_csv) }}
+    <button class="btn btn-success">{{ button_label|default('Sauvegarder') }}</button>
+    {{ form_end(form_csv) }}
+
+
+
     <table class="table">
         <thead>
             <tr>
