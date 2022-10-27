@@ -1,0 +1,4 @@
+﻿email,site,roles,password,nom,prenom,telephone,administrateur,actif
+11111@arthur.fr,Nantes,ROLE_ADMIN,123456,levesque,Arthur,600000000,1,1
+222222@arthur.fr,Quimper,ROLE_ADMIN,123456,levesque,Arthur,600000000,1,1
+3333333@arthur.fr,Nantes,ROLE_ADMIN,123456,levesque,Arthur,600000000,1,1

@@ -15,11 +15,12 @@ use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
-
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
 use phpDocumentor\Reflection\Types\Collection;
+use App\Utils\MajEtatSorties;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,6 +51,11 @@ class SortiesController extends AbstractController
         $filter = new Filter();
 
 
+    #[Route('', name: 'index')]
+    public function index(SortieRepository $sortieRepository,
+                          EtatRepository $etatRepository,
+                          Request $request,
+                          PaginatorInterface $paginator): Response
 
         //Filtres
         $filterForm = $this->createForm(FilterType::class, $filter, ['data' => $filter]);
@@ -92,9 +98,17 @@ class SortiesController extends AbstractController
                 $sorties[] = $sortie;
             }
         }
+
+            $sorties = $paginator->paginate(
+            $sorties,
+            $request->query->getInt('page', 1),
+            5);
+
         return $this->render('sorties/list.html.twig', [
             'filterForm' => $filterForm->createView(),
             'sorties' => $sorties,
+
+            'formFilter' => $formFilter->createView(),
         ]);
     }
 
@@ -113,13 +127,20 @@ class SortiesController extends AbstractController
 
     #[Route('/add', name: 'add')]
     #[Route('/edit/{id}', name: 'edit', requirements: ['id' => '\d+'])]
-    public function addOrEdit(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository, int $id = null): Response
+    public function addOrEdit(Request $request, SortieRepository $sortieRepository, EtatRepository  $etatRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository, int $id = null): Response
     {
         //récupère le user
         $user = $this->getUserSession($request, $participantRepository);
 
+        //var_dump($user);
+
         //récupère les états existants
         $etatCree = $etatRepository->find(1);
+        $etatOuvert = $etatRepository->find(2);
+        $etatCloture = $etatRepository->find(3);
+        $etatEnCours = $etatRepository->find(4);
+        $etatPasse = $etatRepository->find(5);
+        $etatAnnule = $etatRepository->find(6);
 
         $etatAutorise = [1];
 
