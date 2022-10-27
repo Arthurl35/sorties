@@ -33,10 +33,10 @@
         {% if sortie.etat.id == 1 %}
             <a href="{{ path('sortie_publish', {'id':sortie.id}) }}">Publier</a>
         {% endif %}
-        {% if sortie.etat.id != 1 and sortie.etat.id != 2 and sortie.etat.id != 3 %}
+        {% if sortie.etat.id != 4 and sortie.etat.id != 5 and sortie.etat.id != 6 %}
             <a href="{{ path('sortie_cancel', {'id':sortie.id}) }}">Annuler</a>
         {% endif %}
-        {% if sortie.etat.id == 1 %}
+        {% if sortie.etat.id != -1 %}
             <a href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
         {% endif %}
     {% endif %}
