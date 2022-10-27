@@ -11,9 +11,57 @@
 
     <div>
         <h3>Filtres :</h3>
-        {{ form_start(filterForm) }}
-        {{ form_widget(filterForm) }}
-        {{ form_end(filterForm) }}
+        <div class="form-control d-flex flex-row mb-2">
+            <div class="gauche p-2 w-50">
+                <div class="input-group-sm mb-3">
+                    <label for="">Site :</label>
+                    {{ form_widget(filterForm.nom, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <label for="">Le nom de la sortie contient :</label>
+                {{ form_widget(filterForm.site, {'attr': {'class': 'form-select'}}) }}
+
+                <div class="date d-flex mt-4">
+                    Entre {{ form_widget(filterForm.dateHeureDebut, {'attr': {'class': 'ml-2'}}) }} ET {{ form_widget(filterForm.dateHeureFin, {'attr': {'class': 'ml-2'}}) }}
+                </div>
+
+                {{ form_widget(filterForm.rechercher, {'attr': {'class': 'btn btn-primary mt-4'}}) }}
+
+            </div>
+
+            <div class="droite p-2 w-50 d-flex justify-content-center">
+                <div class="mx-3 ">
+                    <div class="form-check mt-3 mb-4">
+                        {{ form_widget(filterForm.sortieOrganisateur, {'attr': {'class': 'form-check-input'}}) }}
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Sorties dont je suis l'organisateur/trice
+                        </label>
+                    </div>
+                    <div class="form-check mb-4">
+                        {{ form_widget(filterForm.sortieInscrit, {'attr': {'class': 'form-check-input'}}) }}
+                        <label class="form-check-label" for="flexCheckChecked">
+                            Sorties auxquelles je suis inscrit/e
+                        </label>
+                    </div>
+                    <div class="form-check mb-4">
+                        {{ form_widget(filterForm.sortiePasInscrit, {'attr': {'class': 'form-check-input'}}) }}
+                        <label class="form-check-label" for="flexCheckChecked">
+                            Sorties auxquelles je ne suis pas inscrit/e
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        {{ form_widget(filterForm.sortiePasse, {'attr': {'class': 'form-check-input'}}) }}
+                        <label class="form-check-label" for="flexCheckChecked">
+                            Sorties passées
+                        </label>
+                    </div>
+                </div>
+
+
+
+            </div>
+    </div>
+
+
     </div>
 
     </div>
@@ -114,7 +162,10 @@
                     {% endif %}
                 </tr>
             {% endfor %}
+
         </table>
+        {{ knp_pagination_render(sorties) }}
+
     </div>
     {{ knp_pagination_render(sorties) }}
 {% endblock %}

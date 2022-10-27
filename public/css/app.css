@@ -2,6 +2,7 @@
 @import url(//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
 
 @import url(https://fonts.googleapis.com/css?family=Titillium+Web:300);
+
 .fa-2x {
     font-size: 2em;
 }
@@ -99,6 +100,7 @@ a:hover,a:focus {
     text-decoration:none;
 }
 
+/* Navigation */
 nav {
     -webkit-user-select:none;
     -moz-user-select:none;
@@ -168,3 +170,75 @@ nav ul,nav li {
     max-width: 10%;
     min-width: 140px;
 }
+
+.nav-res{
+    display: none;
+}
+
+
+
+@media (max-width: 700px) {
+    .main-menu{
+        display: none;
+        z-index: 2000;
+    }
+
+    .nav-res{
+        position: absolute;
+        display: block;
+        width: 100vw;
+        top: -10px;
+        left: 0;
+
+
+    }
+
+    .container-fluid{
+        width: 100vw;
+        background:#212121;
+    }
+
+    .navbar-toggler-icon{
+        background: #432a7f;
+        border-radius: 9999%;
+    }
+
+    .fa{
+        position:relative;
+        display:table-cell;
+        width:60px;
+        height:36px;
+        text-align:center;
+        vertical-align:middle;
+        font-size:18px;
+    }
+
+    .nav-res a {
+        position:relative;
+        vertical-align:middle;
+        width:100%;
+        font-family: 'Titillium Web', sans-serif;
+    }
+
+    .nav-res li>a{
+        position:relative;
+        display:table;
+        border-collapse:collapse;
+        border-spacing:0;
+        color:#999;
+        font-family: arial;
+        font-size: 14px;
+        text-decoration:none;
+        -webkit-transform:translateZ(0) scale(1,1);
+        -webkit-transition:all .1s linear;
+        transition:all .1s linear;
+    }
+
+    .nav-res li:hover>a{
+        color:#fff;
+        background-color:#5fa2db;
+    }
+
+
+}
+
