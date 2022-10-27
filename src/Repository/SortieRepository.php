@@ -65,7 +65,6 @@ class SortieRepository extends ServiceEntityRepository
          //if($filter->isSortieInscrit()) $requete->addSelect('p')->andWhere('p.id = :val')->setParameter('val', $user->getId());
          //if($filter->isSortiePasInscrit()) $requete->andWhere('p.participants != :val')->setParameter('val', $user);
          if($filter->isSortiePasse()) $requete->andWhere('s.etat = :val')->setParameter('val', $etatPassee);
-        var_dump($requete->getDQL());
         return $requete->setMaxResults(1000)->getQuery()->getResult();
 
         /*$requete = 'select * from sortie inner join sortie_participant on sortie_participant.sortie_id = sortie.id where 1 ';

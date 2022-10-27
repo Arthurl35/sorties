@@ -11,6 +11,7 @@
 
     <div>
         <h3>Filtres :</h3>
+        {{ form_start(filterForm) }}
         <div class="form-control d-flex flex-row mb-2">
             <div class="gauche p-2 w-50">
                 <div class="input-group-sm mb-3">
@@ -55,11 +56,9 @@
                         </label>
                     </div>
                 </div>
-
-
-
             </div>
-    </div>
+        </div>
+        {{ form_end(filterForm) }}
 
 
     </div>
@@ -167,5 +166,4 @@
         {{ knp_pagination_render(sorties) }}
 
     </div>
-    {{ knp_pagination_render(sorties) }}
 {% endblock %}
