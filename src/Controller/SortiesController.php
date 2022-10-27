@@ -20,7 +20,6 @@ use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
 use phpDocumentor\Reflection\Types\Collection;
-use App\Utils\MajEtatSorties;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,7 +41,7 @@ class SortiesController extends AbstractController
      * @throws Exception
      */
     #[Route('', name: 'index')]
-    public function index(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, SiteRepository $siteRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository): Response
+    public function index(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, PaginatorInterface $paginator, SiteRepository $siteRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository): Response
 
     {
         $this->majEtatSorties($sortieRepository, $etatRepository);
@@ -71,7 +70,7 @@ class SortiesController extends AbstractController
             $filter->setSortiePasInscrit($filterForm->get('sortiePasInscrit')->getData());
             $filter->setSortiePasse($filterForm->get('sortiePasse')->getData());
 
-            $response = $sortieRepository->findByFilter($filter, $user->getId());
+            $response = $sortieRepository->findByFilter($filter, $user->getId(), $etatRepository->find(5));
 
 
             unset($sorties);
@@ -94,6 +93,12 @@ class SortiesController extends AbstractController
                 $sorties[] = $sortie;
             }
         }
+
+        $sorties = $paginator->paginate(
+            $sorties,
+            $request->query->getInt('page', 1),
+            5);
+
         return $this->render('sorties/list.html.twig', [
             'filterForm' => $filterForm->createView(),
             'sorties' => $sorties,
