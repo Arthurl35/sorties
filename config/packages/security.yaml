@@ -49,6 +49,8 @@ security:
          - { path: ^/profil, roles: ROLE_USER }
 
          - { path: ^/Main, roles: PUBLIC_ACCESS }
+
+         - { path: ^/admin, roles: ROLE_ADMIN}
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
 when@test:
