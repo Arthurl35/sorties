@@ -121,7 +121,7 @@ class SortiesController extends AbstractController
         //récupère les états existants
         $etatCree = $etatRepository->find(1);
 
-        $etatAutorise = [1,2,3];
+        $etatAutorise = [1];
 
         //libelle du btn submit à écouter
         $libelleSubmit = "enregistrer";
@@ -129,10 +129,9 @@ class SortiesController extends AbstractController
 
         if ($id) {
             $sortie = $sortieRepository->find($id);
-            if($sortie->getOrganisateur()->getId() != $user->getId()) return $this->redirectToRoute('sortie_index');
             //test si le créateur est l'actuel demandeur de modification
             if(!$sortie->getOrganisateur()->getId() == $user->getId()) return $this->redirectToRoute('sortie_index');
-            //si l'état est différent de 1 ou 2
+            //si l'état est différent de 1
             if (!in_array($sortie->getEtat()->getId(), $etatAutorise)) return $this->redirectToRoute('sortie_index');
             $libelleSubmit = "modifier";
         } else {
@@ -147,17 +146,9 @@ class SortiesController extends AbstractController
         //selon création ou édition et l'état si édition on supprime des éléments du form
         if ($id) {
             $sortieForm->remove("enregistrer");
-            if($sortie->getEtat()->getId() != 1) {
-                $sortieForm->remove("publier");
-                $publier = false;
-            }
-            else $publier = true;
-
         } else {
-            $sortieForm->remove("publier");
             $sortieForm->remove("modifier");
-            $sortieForm->remove("annuler");
-            $sortieForm->remove("supprimer");
+            $sortieForm->remove("publier");
         }
 
         $sortieForm->handleRequest($request);
@@ -183,12 +174,7 @@ class SortiesController extends AbstractController
             //4 Activité en cours
             //5 Passé
             //6 Annulée
-            //Gestion Création Publication Modification
-            if($libelleSubmit == "modifier"){
-                if($publier){
-                    if($sortieForm->get("publier")->isClicked()) $libelleSubmit = "publier";
-                }
-            }
+            if($libelleSubmit == "modifier" and $sortieForm->get("publier")->isClicked()) $libelleSubmit = "publier";
 
             if ($sortieForm->get($libelleSubmit)->isClicked()) {
 
@@ -198,9 +184,6 @@ class SortiesController extends AbstractController
                 }
                 else if ($libelleSubmit == "modifier") {
                     $messageValid = 'sortie Modifiée !';
-                }
-                else if ($libelleSubmit == "publier") {
-                    $messageValid = 'sortie Publiée !';
                 }
 
                 //traitement des données
@@ -262,12 +245,6 @@ class SortiesController extends AbstractController
                     //redirection vers la page de détail
                     return $this->redirectToRoute('sortie_edit', ['id' => $sortie->getId()]);
                 }
-            }elseif ($sortieForm->get('annuler')->isClicked()){
-                return $this->redirectToRoute('sortie_cancel', ['id' => $sortie->getId()]);
-            }
-            elseif(($sortieForm->get('supprimer')->isClicked())){
-                //delete des données
-                return $this->redirectToRoute('sortie_delete', ['id' => $sortie->getId()]);
             }
             //redirection vers la page de détail
             return $this->redirectToRoute('sortie_index');
@@ -293,8 +270,14 @@ class SortiesController extends AbstractController
         $sortie = $sortieRepository->find($idSortie);
         if($sortie){
             $etat = $sortie->getEtat();
-            if($etat->getId() != 2){
-                $this->addFlash('error', 'La sortie n\'accepte plus d\'inscription');
+            if($etat->getId() != 1){
+                if($etat->getId() != 2){
+                    $this->addFlash('error', 'La sortie n\'accepte plus d\'inscription');
+                    return $this->redirectToRoute('sortie_index');
+                }
+            }
+            else {
+                $this->addFlash('error', 'La sortie n\'est pas ouvert aux inscription');
                 return $this->redirectToRoute('sortie_index');
             }
         }
@@ -326,8 +309,14 @@ class SortiesController extends AbstractController
         $sortie = $sortieRepository->find($idSortie);
         if($sortie){
             $etat = $sortie->getEtat();
-            if($etat->getId() != 2 && $etat->getId() != 3){
-                $this->addFlash('error', 'Vous ne pouvez plus vous désinscrire !');
+            if($etat->getId() != 1){
+                if($etat->getId() != 2 && $etat->getId() != 3){
+                    $this->addFlash('error', 'Vous ne pouvez plus vous désinscrire !');
+                    return $this->redirectToRoute('sortie_index');
+                }
+            }
+            else {
+                $this->addFlash('error', 'La sortie n\'est pas ouvert aux désinscription');
                 return $this->redirectToRoute('sortie_index');
             }
         }
@@ -358,7 +347,7 @@ class SortiesController extends AbstractController
     public function delete(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, int $id): Response
     {
         $this->majEtatSorties($sortieRepository, $etatRepository);
-        $etatAutorise = [1,2,3,5,6];
+        $etatAutorise = [1];
 
         $user = $this->getUserSession($request, $participantRepository);
         $sortie = $sortieRepository->find($id);
@@ -384,7 +373,7 @@ class SortiesController extends AbstractController
     public function cancel(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, int $id): Response
     {
         $this->majEtatSorties($sortieRepository, $etatRepository);
-        $etatAutorise = [1,2,3];
+        $etatAutorise = [2,3];
 
         $user = $this->getUserSession($request, $participantRepository);
         $sortie = $sortieRepository->find($id);
