@@ -36,7 +36,7 @@
         {% if sortie.etat.id != 4 and sortie.etat.id != 5 and sortie.etat.id != 6 %}
             <a class="btn btn-warning" href="{{ path('sortie_cancel', {'id':sortie.id}) }}">Annuler</a>
         {% endif %}
-        {% if sortie.etat.id != -1 %}
+        {% if sortie.etat.id != 4 %}
             <a class="btn btn-danger" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
         {% endif %}
     {% endif %}

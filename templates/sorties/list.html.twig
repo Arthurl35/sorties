@@ -144,7 +144,19 @@
                         {% endif %}
 
                     </td>
-                    <td>{{ sortie.etat.libelle }}</td>
+                    {% if(sortie.etat.id == 1) %}
+                        <td><span title="créée" class="icon" style="color: forestgreen"><i class="bi bi-tools"></i></span></td>
+                    {% elseif(sortie.etat.id == 2) %}
+                        <td><span title="ouverte" class="icon" style="color: #432a7f"><i class="bi bi-door-open-fill"></i></span></td>
+                    {% elseif(sortie.etat.id == 3) %}
+                        <td><span title="cloturée" class="icon" style="color: maroon"><i class="bi bi-door-closed-fill"></i></span></td>
+                    {% elseif(sortie.etat.id == 4) %}
+                        <td><span title="en cours" class="icon" style="color: goldenrod"><i class="bi bi-hourglass-split"></i></span></td>
+                    {% elseif(sortie.etat.id == 5) %}
+                        <td><span title="passée" class="icon" style="color: chocolate"><i class="bi bi-clock-history"></i></span></td>
+                    {% elseif(sortie.etat.id == 6) %}
+                        <td><span title="annulée" class="icon" style="color: #B0413E"><i class="bi bi-x-square-fill"></i></span></td>
+                    {% endif %}
                     <td><a title="détails" href="{{ path('sortie_show', {'id': sortie.id}) }}"><span class="icon" style="color:#432a7f"><i class="bi bi-eye-fill"></i></span></a></td>
                     {% if(sortie.organisateur.id == app.user.id) %}
                         {% if(sortie.etat.id == 1) %}
