@@ -152,7 +152,7 @@
                             <td><a title="publier" href="{{ path('sortie_publish', {'id': sortie.id }) }}"><span class="icon" style="color:lightseagreen"><i class="bi bi-clipboard2-check"></i></span></a></td>
                         {% endif %}
                         {% if(sortie.etat.id == 2 or sortie.etat.id == 3) %}
-                            <td><a href="{{ path('sortie_cancel', {'id': sortie.id}) }}"><span class="icon" style="color:darkred"><i class="bi bi-sign-stop-fill"></i></span></a></td>
+                            <td><a title="annuler" href="{{ path('sortie_cancel', {'id': sortie.id}) }}"><span class="icon" style="color:darkred"><i class="bi bi-sign-stop-fill"></i></span></a></td>
                         {% endif %}
                     {% endif %}
                 </tr>
