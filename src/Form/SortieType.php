@@ -14,8 +14,10 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -40,9 +42,9 @@ class SortieType extends AbstractType
                 'html5' => true,
                 'widget' => 'single_text'
             ])
-            ->add('nbInscriptionMax', NumberType::class, ['label' => 'Nombre de places :'])
-            ->add('duree', NumberType::class, ['label' => 'Durée :'])
-            ->add('infosSortie', TextType::class, ['label' => 'Description et infos :'])
+            ->add('nbInscriptionMax', IntegerType::class, ['label' => 'Nombre de places :'])
+            ->add('duree', IntegerType::class, ['label' => 'Durée :'])
+            ->add('infosSortie', TextareaType::class, ['label' => 'Description et infos :'])
             ->add('lieu', EntityType::class, [
                 'label' => 'Lieu :',
                 'class' => Lieu::class,
@@ -88,7 +90,7 @@ class SortieType extends AbstractType
                     'display' => 'none'
                 ]
             ])
-            ->add('latitude_lieu', NumberType::class, [
+            ->add('latitude_lieu', IntegerType::class, [
                 'label' => 'Latitude :',
                 'required' => false,
                 'attr' => [
@@ -96,7 +98,7 @@ class SortieType extends AbstractType
                     'display' => 'none'
                 ]
             ])
-            ->add('longitude_lieu', NumberType::class, [
+            ->add('longitude_lieu', IntegerType::class, [
                 'label' => 'Longitude :',
                 'required' => false,
                 'attr' => [
@@ -105,9 +107,8 @@ class SortieType extends AbstractType
                 ]
             ])
             ->add('enregistrer', SubmitType::class)
+            ->add('publier', SubmitType::class)
             ->add('modifier', SubmitType::class)
-            ->add('annuler', SubmitType::class)
-            ->add('supprimer', SubmitType::class)
         ;
     }
 

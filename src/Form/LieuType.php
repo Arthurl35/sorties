@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Lieu;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,11 +22,11 @@ class LieuType extends AbstractType
                 'label'=> 'Rue :',
                 'attr' => ['class' => '']
             ])
-            ->add('latitude', TextType::class, [
+            ->add('latitude', IntegerType::class, [
                 'label'=> 'Latitude :',
                 'attr' => ['class' => '']
             ])
-            ->add('longitude', TextType::class, [
+            ->add('longitude', IntegerType::class, [
                 'label'=> 'Longitude :',
                 'attr' => ['class' => '']
             ])
