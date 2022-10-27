@@ -49,7 +49,7 @@ class SortiesController extends AbstractController
 
         $filter = new Filter();
 
-
+        $sorties1=array();
 
         //Filtres
         $filterForm = $this->createForm(FilterType::class, $filter, ['data' => $filter]);
@@ -69,10 +69,11 @@ class SortiesController extends AbstractController
             $filter->setSortiePasInscrit($filterForm->get('sortiePasInscrit')->getData());
             $filter->setSortiePasse($filterForm->get('sortiePasse')->getData());
 
+            $sorties = $sortieRepository->findByFilter($filter, $user, $etatRepository->find(5));
+
+
+            /*unset($sorties);
             $response = $sortieRepository->findByFilter($filter, $user->getId());
-
-
-            unset($sorties);
             foreach ($response as $row){
                 $sortie = new sortie();
                 $sortie->setId($row['id']);
@@ -90,7 +91,7 @@ class SortiesController extends AbstractController
                 $sortie->setSite($siteRepository->find($row['site_id']));
                 $sortie->setOrganisateur($participantRepository->find($row['organisateur_id']));
                 $sorties[] = $sortie;
-            }
+            }*/
         }
         return $this->render('sorties/list.html.twig', [
             'filterForm' => $filterForm->createView(),

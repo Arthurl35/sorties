@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Participant;
 use App\Entity\Sortie;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
@@ -44,28 +46,29 @@ class SortieRepository extends ServiceEntityRepository
      * @return Sortie[] Returns an array of Sortie objects
      * @throws Exception
      */
-    public function findByFilter($filter, $idUser): array
+    public function findByFilter($filter, $user, $etatPassee): array
     {
-   /*     $requete = $this->createQueryBuilder('s')->innerJoin('sortie_participant on sortie_participant.sortie_id = sortie.id', 'sp');
+       //$requete = $this->createQueryBuilder('s')->innerJoin('sortie_participant on sortie_participant.sortie_id = sortie.id', 'sp');
+        $requete = $this->createQueryBuilder('s')->innerJoin(Participant::class, 'p');
 
-         if($filter->getSite() != null) $requete->andWhere('s.site_id = :val')->setParameter('val', $filter->getSite()->getId());
-         if($filter->getNom() != null) $requete->andWhere('s.nom = :val')->setParameter('val', $filter->getNom());
+         if($filter->getSite() != null) $requete->andWhere('s.site = :val')->setParameter('val', $filter->getSite());
+         if($filter->getNom() != null) $requete->andWhere('s.nom LIKE :val')->setParameter('val', '%'.$filter->getNom().'%');
          if($filter->getDateHeureDebut() != null){
-            if($filter->getDateHeureFin() == null) $filter->setDateHeureFin(new \DateTime());
-                     // ajout
+            if($filter->getDateHeureFin() == null) $filter->setDateHeureFin(DateTime::createFromFormat('Y-m-d', '2100-01-01'));
+                $requete->andWhere('s.dateHeureDebut BETWEEN :val1 AND :val2')->setParameter('val1', $filter->getDateHeureDebut())->setParameter('val2', $filter->getDateHeureFin());
          }
          elseif ($filter->getDateHeureFin() != null){
-            $filter->setDateHeureDebut(new \DateTime());
-                     // ajout
+            $filter->setDateHeureDebut(DateTime::createFromFormat('Y-m-d', '2000-01-01'));
+            $requete->andWhere('s.dateHeureDebut BETWEEN :val1 AND :val2')->setParameter('val1', $filter->getDateHeureDebut())->setParameter('val2', $filter->getDateHeureFin());
          }
-         ($filter->getSortieOrganisateur()) $requete->andWhere('s.organisateur_id = :val')->setParameter('val', $idUser);
-         if($filter->getSortieInscrit()) $requete->andWhere('sp.participant_id = :val')->setParameter('val', $idUser);
-         if($filter->getSortiePasInscrit()) $requete->andWhere('sp.participant_id != :val')->setParameter('val', $idUser);
-         if($filter->getSortiePasse()) $requete->andWhere('s.etat_id = :val')->setParameter('val', 5);
+         if($filter->isSortieOrganisateur()) $requete->andWhere('s.organisateur = :val')->setParameter('val', $user);
+         //if($filter->isSortieInscrit()) $requete->addSelect('p')->andWhere('p.id = :val')->setParameter('val', $user->getId());
+         //if($filter->isSortiePasInscrit()) $requete->andWhere('p.participants != :val')->setParameter('val', $user);
+         if($filter->isSortiePasse()) $requete->andWhere('s.etat = :val')->setParameter('val', $etatPassee);
+        var_dump($requete->getDQL());
+        return $requete->setMaxResults(1000)->getQuery()->getResult();
 
-        return $requete->setMaxResults(100)->getQuery()->getResult();
-*/
-        $requete = 'select * from sortie inner join sortie_participant on sortie_participant.sortie_id = sortie.id where 1 ';
+        /*$requete = 'select * from sortie inner join sortie_participant on sortie_participant.sortie_id = sortie.id where 1 ';
         $requete2 = "select distinct sortie.id as 'id', sortie.nom as 'nom', sortie.date_heure_debut as 'date_heure_debut', sortie.duree as 'duree', sortie.date_limite_inscription as 'date_limite_inscription', sortie.nb_inscription_max as 'nb_inscription_max', sortie.infos_sortie as 'infos_sortie', sortie.lieu_id as 'lieu_id', sortie.etat_id as 'etat_id', sortie.site_id as 'site_id', sortie.organisateur_id as 'organisateur_id'
                         from sortie inner join sortie_participant on sortie_participant.sortie_id = sortie.id where 1 ";
 
@@ -86,7 +89,7 @@ class SortieRepository extends ServiceEntityRepository
 
         $em = $this->getEntityManager();
         $stmt = $em->getConnection()->executeQuery($requete2);
-        return $stmt->fetchAll();
+        return $stmt->fetchAll();*/
 
     }
 

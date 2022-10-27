@@ -36,7 +36,7 @@ class FilterType extends AbstractType
                 'label' => 'Le nom de la sortie contient :',
                 'required' => false,
             ])
-            ->add('dateHeureDebut',DateTimeType::class, [
+            ->add('dateHeureDebut',DateType::class, [
                 'label' => 'Entre',
                 'required' => false,
                 'html5' => true,
