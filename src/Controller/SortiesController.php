@@ -37,25 +37,19 @@ class SortiesController extends AbstractController
 
     }
 
-    /**
-     * @throws Exception
-     */
-    #[Route('', name: 'index')]
-    public function index(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, SiteRepository $siteRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository): Response
-
-    {
-        $this->majEtatSorties($sortieRepository, $etatRepository);
-        $user = $this->getUserSession($request, $participantRepository);
-        $sorties = $sortieRepository->findAll();
-
-        $filter = new Filter();
-
 
     #[Route('', name: 'index')]
     public function index(SortieRepository $sortieRepository,
                           EtatRepository $etatRepository,
                           Request $request,
-                          PaginatorInterface $paginator): Response
+                          PaginatorInterface $paginator,
+                            ParticipantRepository $participantRepository): Response {
+
+        $this->majEtatSorties($sortieRepository, $etatRepository);
+        $user = $this->getUserSession($request, $participantRepository);
+        $sorties = $sortieRepository->findAll();
+
+        $filter = new Filter();
 
         //Filtres
         $filterForm = $this->createForm(FilterType::class, $filter, ['data' => $filter]);
@@ -107,8 +101,6 @@ class SortiesController extends AbstractController
         return $this->render('sorties/list.html.twig', [
             'filterForm' => $filterForm->createView(),
             'sorties' => $sorties,
-
-            'formFilter' => $formFilter->createView(),
         ]);
     }
 
