@@ -11,12 +11,11 @@
             </svg>
             Nouveau participant</button></a>
 
-    <h1>Upload test</h1>
 
 
     {{ form_start(form_csv) }}
     {{ form_widget(form_csv) }}
-    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    <button class="btn btn-success">{{ button_label|default('Sauvegarder') }}</button>
     {{ form_end(form_csv) }}
 
 
