@@ -105,6 +105,123 @@
     {% endif %}
 </nav>
 
+<!-- Nav Bar response-->
+<div class="nav-res">
+    <nav class="navbar navbar-expand-lg bg-light nav-response">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="{{ path('sortie_index') }}">
+                            <i class="fa fa-home fa-2x"></i>
+                            <span class="nav-text">
+                    Accueil
+                </span>
+                        </a>
+                    </li>
+                    {% if app.user %}
+                        <li class="nav-item">
+                            <a href="{{ path('profil_edit', {'id':app.user.id}) }}">
+                                <i class="fa fa-pencil"></i>
+                                <span class="nav-text">
+                                Modifier mon profil
+                            </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('profil_show', {'id':app.user.id}) }}">
+                                <i class="fa fa-2x"><img
+                                            src="{{ asset('img/backdrops/' ~ app.user.backdrop) }}" alt="lol"
+                                            class="rounded-circle-icon"
+                                            alt="Black and White Portrait of a Man"
+                                            loading="lazy"
+                                    /></i>
+                                <span class="nav-text">
+                            Mon Profil ({{ app.user.nom | capitalize }} {{ app.user.prenom | capitalize }})
+                        </span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ path('sortie_index') }}">
+                                <i class="fa fa-table fa-2x"></i>
+                                <span class="nav-text">
+                        Consulter les sorties
+                    </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('sortie_add') }}">
+                                <i class="fa fa-plus"></i>
+                                <span class="nav-text">
+                                Créer une sortie
+                            </span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ path('app_site_index', {'id':app.user.id}) }}">
+                                <i class="fa fa-sitemap"></i>
+                                <span class="nav-text">
+                                Gérer les sites
+                            </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+
+                            <a href="{{ path('app_lieu_index') }}">
+                                <i class="fa fa-map-marker"></i>
+                                <span class="nav-text">
+                                Gérer les lieux
+                            </span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ path('app_participant_index') }}">
+                                <i class="fa fa-user fa-2x"></i>
+                                <span class="nav-text">
+                        Gérer les participants
+                    </span>
+                            </a>
+                        </li>
+
+                    {% endif %}
+
+                </ul>
+
+                {% if app.user %}
+                    <ul class="logout">
+                        <li class="nav-item">
+                            <a href="{{ path('app_logout') }}">
+                                <i class="fa fa-power-off fa-2x"></i>
+                                <span class="nav-text">
+                                Se déconnecter
+                            </span>
+                            </a>
+                        </li>
+                    </ul>
+                {% else %}
+                    <ul class="login">
+                        <li class="nav-item">
+                            <a href="{{ path('app_login') }}">
+                                <i class="fa fa-arrow-right fa-2x"></i>
+                                <span class="nav-text">
+                        Se connecter
+                    </span>
+                            </a>
+                        </li >
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+</div>
+
 <!-- Navbar center -->
 <div class="header-center">
     <img
