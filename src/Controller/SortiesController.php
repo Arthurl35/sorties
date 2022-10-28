@@ -460,7 +460,7 @@ class SortiesController extends AbstractController
                     if($sortie->getDateLimiteInscription() < new \DateTime()) $sortie->setEtat($etatRepository->find(3));
                     break;
                 case 3:
-                    if($sortie->getDateHeureDebut() < new \DateTime()) $sortie->setEtat($etatRepository->find(4));
+                    if($sortie->getDateHeureDebut() < (new \DateTime())->format('d-m-Y h:m:s')) $sortie->setEtat($etatRepository->find(4));
                     break;
                 case 4:
                     $timeStampFin = strtotime($sortie->getDateHeureDebut()->format('d-m-Y h:m:s'))+$sortie->getDuree();
