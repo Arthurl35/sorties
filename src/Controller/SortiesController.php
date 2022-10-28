@@ -19,7 +19,6 @@ use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
 use phpDocumentor\Reflection\Types\Collection;
-use App\Utils\MajEtatSorties;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,19 +36,20 @@ class SortiesController extends AbstractController
 
     }
 
-
+    /**
+     * @throws Exception
+     */
     #[Route('', name: 'index')]
-    public function index(SortieRepository $sortieRepository,
-                          EtatRepository $etatRepository,
-                          Request $request,
-                          PaginatorInterface $paginator,
-                            ParticipantRepository $participantRepository): Response {
+    public function index(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, PaginatorInterface $paginator, SiteRepository $siteRepository, ParticipantRepository $participantRepository, LieuRepository $lieuRepository): Response
 
+    {
         $this->majEtatSorties($sortieRepository, $etatRepository);
         $user = $this->getUserSession($request, $participantRepository);
         $sorties = $sortieRepository->findAll();
 
         $filter = new Filter();
+
+        $sorties1=array();
 
         //Filtres
         $filterForm = $this->createForm(FilterType::class, $filter, ['data' => $filter]);
@@ -69,10 +69,10 @@ class SortiesController extends AbstractController
             $filter->setSortiePasInscrit($filterForm->get('sortiePasInscrit')->getData());
             $filter->setSortiePasse($filterForm->get('sortiePasse')->getData());
 
-            $response = $sortieRepository->findByFilter($filter, $user->getId());
+            $sorties = $sortieRepository->findByFilter($filter, $user->getId(), $etatRepository->find(5));
 
 
-            unset($sorties);
+            /*unset($sorties);
             foreach ($response as $row){
                 $sortie = new sortie();
                 $sortie->setId($row['id']);
@@ -89,9 +89,9 @@ class SortiesController extends AbstractController
                 $sortie->setEtat($etatRepository->find($row['etat_id']));
                 $sortie->setSite($siteRepository->find($row['site_id']));
                 $sortie->setOrganisateur($participantRepository->find($row['organisateur_id']));
-                $sorties[] = $sortie;
+                $sorties[] = $sortie;*/
             }
-        }
+
 
             $sorties = $paginator->paginate(
             $sorties,

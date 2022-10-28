@@ -10,13 +10,68 @@
 
 {% block body %}
     <h2 class="body-title">Créer une sortie</h2>
-    <div>
-
         {{ form_start(sortieForm) }}
-            {{ form_widget(sortieForm) }}
+        <div class="mb-2">
+            <div class="input-group-sm mb-3">
+                <label for="">Nom de la sortie :</label>
+                {{ form_widget(sortieForm.nom, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="input-group-sm mb-3">
+                <label for="">Date et heure de la sortie :</label>
+                {{ form_widget(sortieForm.dateHeureDebut, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="input-group-sm mb-3">
+                <label for="">Date limite d'inscription :</label>
+                {{ form_widget(sortieForm.dateLimiteInscription, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="input-group-sm mb-3">
+                <label for="">Nombre de places :</label>
+                {{ form_widget(sortieForm.nbInscriptionMax, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="input-group-sm mb-3">
+                <label for="">Durée :</label>
+                {{ form_widget(sortieForm.duree, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="input-group-sm mb-3">
+                <label for="">Description et infos :</label>
+                {{ form_widget(sortieForm.infosSortie, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="input-group-sm mb-3">
+                <label for="">Lieu :</label>
+                {{ form_widget(sortieForm.lieu, {'attr': {'class': 'form-select'}}) }}
+            </div>
+
+            {{ form_widget(sortieForm.add_lieu, {'attr': {'class': 'btn btn-primary mt-4 btn_add_lieu'}}) }}
+
+            <div class="input-group-sm mb-3">
+                <label for="">Nom du lieu :</label>
+                {{ form_widget(sortieForm.nom_lieu, {'attr': {'class': 'form-control f_lieu'}}) }}
+            </div>
+            <div class="input-group-sm mb-3">
+                <label for="">Rue :</label>
+                {{ form_widget(sortieForm.rue_lieu, {'attr': {'class': 'form-control f_lieu'}}) }}
+            </div>
+            <div class="input-group-sm mb-3">
+                <label for="">Ville :</label>
+                {{ form_widget(sortieForm.ville_lieu, {'attr': {'class': 'form-control f_lieu'}}) }}
+            </div>
+            <div class="input-group-sm mb-3">
+                <label for="">Code postal :</label>
+                {{ form_widget(sortieForm.cp_lieu, {'attr': {'class': 'form-control f_lieu'}}) }}
+            </div>
+            <div class="input-group-sm mb-3">
+                <label for="">Latitude :</label>
+                {{ form_widget(sortieForm.latitude_lieu, {'attr': {'class': 'form-control f_lieu'}}) }}
+            </div>
+            <div class="input-group-sm mb-3">
+                <label for="">Longitude :</label>
+                {{ form_widget(sortieForm.longitude_lieu, {'attr': {'class': 'form-control f_lieu'}}) }}
+            </div>
+
+            {{ form_widget(sortieForm.enregistrer, {'attr': {'class': 'btn btn-primary mt-4'}}) }}
+        </div>
         {{ form_end(sortieForm) }}
 
-    </div>
 {% endblock %}
 
 {% block extraJs %}

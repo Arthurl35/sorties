@@ -5,23 +5,21 @@
 {% endblock %}
 
 {% block body %}
-    {% for sortie in sorties %}
-        {{ sortie.nom }}
-    {% endfor %}
 
     <h2 class="body-title">Accueil</h2>
 
 
     <div>
         <h3>Filtres :</h3>
+        {{ form_start(filterForm) }}
         <div class="form-control d-flex flex-row mb-2">
             <div class="gauche p-2 w-50">
                 <div class="input-group-sm mb-3">
                     <label for="">Site :</label>
-                    {{ form_widget(filterForm.nom, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_widget(filterForm.site, {'attr': {'class': 'form-select'}}) }}
                 </div>
                 <label for="">Le nom de la sortie contient :</label>
-                {{ form_widget(filterForm.site, {'attr': {'class': 'form-select'}}) }}
+                {{ form_widget(filterForm.nom, {'attr': {'class': 'form-control'}}) }}
 
                 <div class="date d-flex mt-4">
                     Entre {{ form_widget(filterForm.dateHeureDebut, {'attr': {'class': 'ml-2'}}) }} ET {{ form_widget(filterForm.dateHeureFin, {'attr': {'class': 'ml-2'}}) }}
@@ -58,15 +56,9 @@
                         </label>
                     </div>
                 </div>
-
-
-
             </div>
-    </div>
-
-
-    </div>
-
+        </div>
+        {{ form_end(filterForm) }}
     </div>
     <div>
         <table class="table">
@@ -94,7 +86,7 @@
 
                         {% if(sortie.etat.id == 2) %}
                             {% if(sortie.organisateur.id == app.user.id) %}
-                                <span>✔</span>
+                                <span title="Inscrit (organisateur)" class="icon" style="color: chartreuse"><i class="bi bi-check-circle-fill"></i></span>
                             {% else %}
                                 {% if sortie.participants | length != 0 %}
                                     {% set inscrit = false %}
@@ -104,30 +96,34 @@
                                         {% endif %}
                                     {% endfor %}
                                     {% if(inscrit) %}
-                                        <a href="{{ path('sortie_removeRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"><span>✔</span></a>
+                                        <a title="Se désinscrire" href="{{ path('sortie_removeRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"><span class="icon" style="color: brown"><i class="bi bi-box-arrow-in-left"></i></span></a>
                                     {% else %}
-                                        <a href="{{ path('sortie_addRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"> s'inscrire</a>
+                                        <a title="S'inscrire" href="{{ path('sortie_addRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"><span class="icon" style="color: darkslategray"><i class="bi bi-box-arrow-in-right"></i></span></a>
                                     {% endif %}
                                 {% else %}
-                                    <a href="{{ path('sortie_addRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"> s'inscrire</a>
+                                    <a title="S'inscrire" href="{{ path('sortie_addRegister', {'idUser': app.user.id, 'idSortie': sortie.id}) }}"><span class="icon" style="color: darkslategray"><i class="bi bi-box-arrow-in-right"></i></span></a>
                                 {% endif %}
                             {% endif %}
 
                         {% elseif(sortie.etat.id != 1 and sortie.etat.id != 2) %}
-                            {% if sortie.participants | length != 0 %}
-                                {% set inscrit = false %}
-                                {% for participant in sortie.participants %}
-                                    {% if participant.id == app.user.id %}
-                                        {% set inscrit = true %}
-                                    {% endif %}
-                                {% endfor %}
-                                {% if(inscrit) %}
-                                    <span>✔</span>
-                                {% else %}
-                                    <span>Non Inscrit</span>
-                                {% endif %}
+                            {% if(sortie.organisateur.id == app.user.id) %}
+                                <span title="Inscrit (organisateur)" class="icon" style="color: chartreuse"><i class="bi bi-check-circle-fill"></i></span>
                             {% else %}
-                                <span>Non Inscrit</span>
+                                {% if sortie.participants | length != 0 %}
+                                    {% set inscrit = false %}
+                                    {% for participant in sortie.participants %}
+                                        {% if participant.id == app.user.id %}
+                                            {% set inscrit = true %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if(inscrit) %}
+                                        <span title="Inscrit" class="icon" style="color: forestgreen"><i class="bi bi-check-circle-fill"></i></span>
+                                    {% else %}
+                                        <span title="Non inscrit" class="icon" style="color: #B0413E;"><i class="bi bi-x-circle-fill"></i></span>
+                                    {% endif %}
+                                {% else %}
+                                    <span title="Non inscrit" class="icon" style="color: #B0413E;"><i class="bi bi-x-circle-fill"></i></span>
+                                {% endif %}
                             {% endif %}
                         {% elseif (sortie.etat.id == 1) %}
                             {% if sortie.participants | length != 0 %}
@@ -138,29 +134,37 @@
                                     {% endif %}
                                 {% endfor %}
                                 {% if(inscrit) %}
-                                    <span>✔</span>
+                                    <span title="Inscrit (organisateur)" class="icon" style="color: chartreuse"><i class="bi bi-check-circle-fill"></i></span>
                                 {% else %}
-                                    <span>Inscription à venir</span>
+                                    <span title="Inscription à venir" class="icon" style="color: #132135"><i class="bi bi-calendar-event-fill"></i></span>
                                 {% endif %}
                             {% else %}
-                                <span>Inscription à venir</span>
-
+                                <span title="Inscription à venir" class="icon" style="color: #132135"><i class="bi bi-calendar-event-fill"></i></span>
                             {% endif %}
                         {% endif %}
 
                     </td>
-                    <td>
-                        <a href="{{ path('profil_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</a>
-                    </td>
-                    <td>{{ sortie.etat.libelle }}</td>
-                    <td><a href="{{ path('sortie_show', {'id': sortie.id}) }}">view</a></td>
+                    {% if(sortie.etat.id == 1) %}
+                        <td><span title="créée" class="icon" style="color: forestgreen"><i class="bi bi-tools"></i></span></td>
+                    {% elseif(sortie.etat.id == 2) %}
+                        <td><span title="ouverte" class="icon" style="color: #432a7f"><i class="bi bi-door-open-fill"></i></span></td>
+                    {% elseif(sortie.etat.id == 3) %}
+                        <td><span title="cloturée" class="icon" style="color: maroon"><i class="bi bi-door-closed-fill"></i></span></td>
+                    {% elseif(sortie.etat.id == 4) %}
+                        <td><span title="en cours" class="icon" style="color: goldenrod"><i class="bi bi-hourglass-split"></i></span></td>
+                    {% elseif(sortie.etat.id == 5) %}
+                        <td><span title="passée" class="icon" style="color: chocolate"><i class="bi bi-clock-history"></i></span></td>
+                    {% elseif(sortie.etat.id == 6) %}
+                        <td><span title="annulée" class="icon" style="color: #B0413E"><i class="bi bi-x-square-fill"></i></span></td>
+                    {% endif %}
+                    <td><a title="détails" href="{{ path('sortie_show', {'id': sortie.id}) }}"><span class="icon" style="color:#432a7f"><i class="bi bi-eye-fill"></i></span></a></td>
                     {% if(sortie.organisateur.id == app.user.id) %}
                         {% if(sortie.etat.id == 1) %}
-                            <td><a href="{{ path('sortie_edit', {'id': sortie.id}) }}">edit</a></td>
-                            <td><a href="{{ path('sortie_publish', {'id': sortie.id}) }}">publish</a></td>
+                            <td><a title="éditer" href="{{ path('sortie_edit', {'id': sortie.id}) }}"><span class="icon" style="color:goldenrod"><i class="bi bi-pencil-square"></i></span></a></td>
+                            <td><a title="publier" href="{{ path('sortie_publish', {'id': sortie.id }) }}"><span class="icon" style="color:lightseagreen"><i class="bi bi-clipboard2-check"></i></span></a></td>
                         {% endif %}
                         {% if(sortie.etat.id == 2 or sortie.etat.id == 3) %}
-                            <td><a href="{{ path('sortie_cancel', {'id': sortie.id}) }}">annuler</a></td>
+                            <td><a title="annuler" href="{{ path('sortie_cancel', {'id': sortie.id}) }}"><span class="icon" style="color:darkred"><i class="bi bi-sign-stop-fill"></i></span></a></td>
                         {% endif %}
                     {% endif %}
                 </tr>
@@ -168,7 +172,5 @@
 
         </table>
         {{ knp_pagination_render(sorties) }}
-
     </div>
-    {{ knp_pagination_render(sorties) }}
 {% endblock %}

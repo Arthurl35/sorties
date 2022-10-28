@@ -28,25 +28,25 @@
 
     {% if app.user.id == sortie.organisateur.id %}
         {% if sortie.etat.id == 1  %}
-            <a href="{{ path('sortie_edit', {'id':sortie.id}) }}">Modifier</a>
+            <a class="btn btn-primary" href="{{ path('sortie_edit', {'id':sortie.id}) }}">Modifier</a>
         {% endif %}
         {% if sortie.etat.id == 1 %}
-            <a href="{{ path('sortie_publish', {'id':sortie.id}) }}">Publier</a>
+            <a class="btn btn-success" href="{{ path('sortie_publish', {'id':sortie.id}) }}">Publier</a>
         {% endif %}
-        {% if sortie.etat.id != 1 and sortie.etat.id != 2 and sortie.etat.id != 3 %}
-            <a href="{{ path('sortie_cancel', {'id':sortie.id}) }}">Annuler</a>
+        {% if sortie.etat.id != 4 and sortie.etat.id != 5 and sortie.etat.id != 6 %}
+            <a class="btn btn-warning" href="{{ path('sortie_cancel', {'id':sortie.id}) }}">Annuler</a>
         {% endif %}
-        {% if sortie.etat.id == 1 %}
-            <a href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
+        {% if sortie.etat.id != 4 %}
+            <a class="btn btn-danger" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
         {% endif %}
     {% endif %}
 
-    {% if sortie.etat.id == 2 %}
+    {% if sortie.etat.id == 2 and app.user.id != sortie.organisateur.id %}
         <!-- test pour affiche inscription il faut ajout test si l'état autorise-->
         {% if inscrit %}
-            <a href="{{ path('sortie_removeRegister', {'idUser':app.user.id, 'idSortie':sortie.id}) }}">Se désinscrire</a>
+            <a class="btn btn-danger" href="{{ path('sortie_removeRegister', {'idUser':app.user.id, 'idSortie':sortie.id}) }}">Se désinscrire</a>
         {% else %}
-            <a href="{{ path('sortie_addRegister', {'idUser':app.user.id, 'idSortie':sortie.id}) }}">S'inscrire</a>
+            <a class="btn btn-success" href="{{ path('sortie_addRegister', {'idUser':app.user.id, 'idSortie':sortie.id}) }}">S'inscrire</a>
         {% endif %}
     {% endif %}
 
