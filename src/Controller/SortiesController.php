@@ -275,7 +275,8 @@ class SortiesController extends AbstractController
     }
 
     #[Route('/addRegister/{idUser}&{idSortie}', name: 'addRegister', requirements: ['idUser' => '\d+', 'idSortie' => '\d+'])]
-    public function addRegister(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EtatRepository $etatRepository, int $idUser, int $idSortie): Response
+    public function addRegister(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, 
+                                EtatRepository $etatRepository, int $idUser, int $idSortie): Response
     {
         $this->majEtatSorties($sortieRepository, $etatRepository);
 
